@@ -9,7 +9,7 @@
 namespace MsqLights {
     class Engine;
 
-    class Modifier : public Modifiable, public Drawable {
+    class Modifier : public Modifiable, public Drawable, public Serializable {
     protected:
         int blendModeGui_ = 0;
     public:
@@ -23,11 +23,14 @@ namespace MsqLights {
         std::string name_;
 
         Modifier(Engine* engine);
+        Modifier(Engine* engine, rapidjson::Value& val);
 
+        rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
         void DrawProps() override;
         virtual float AmountWithLine(Vector2 a, Vector2 b) = 0; 
         virtual void Draw() override;
         virtual Rectangle GetSelector();
         virtual void SetPosition(Vector2 p) = 0;
+        virtual void Update();
     };
 }

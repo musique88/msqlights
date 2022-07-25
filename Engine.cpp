@@ -2,6 +2,14 @@
 #include <cstring>
 #include "dark.h"
 #include <cstring>
+#include "CircleSpotModifier.hpp"
+#include "LineSpotModifier.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+#include <rapidjson/document.h>
+#include <rapidjson/prettywriter.h>
 
 namespace MsqLights {
     Engine::EmptyModifiable::EmptyModifiable(Engine* engine)
@@ -11,23 +19,35 @@ namespace MsqLights {
     }
 
     void Engine::EmptyModifiable::DrawProps() {
-        if(GuiButton((Rectangle) {1500, 20, 100, 20}, "Spawn Fixture")){
+        if(GuiButton((Rectangle) {1500, 20, 80, 20}, "Fixture")){
             engine_->fixtures.push_back(new Fixture(engine_, (Vector2){500, 500}, (Vector2){500, 500}, "Fixture", 0, Fixture::Mode::Dimmer));
             engine_->selectedModifiable = engine_->fixtures[engine_->fixtures.size() - 1];
         }
-        if(GuiButton((Rectangle) {1600, 20, 100, 20}, "Spawn Rectangle")){
+        if(GuiButton((Rectangle) {1580, 20, 80, 20}, "Rectangle")){
             RectangleModifier* r = new RectangleModifier(engine_);
             engine_->modifiers.push_back(r);
             r->name_ = "Rectangle";
             engine_->selectedModifiable = r;
-            
         }
-        if(GuiButton((Rectangle) {1700, 20, 100, 20}, "Spawn Spot")){
+        if(GuiButton((Rectangle) {1660, 20, 80, 20}, "Spot")){
             SpotModifier* s = new SpotModifier(engine_);
             engine_->modifiers.push_back(s);
             s->name_ = "Spot";
             engine_->selectedModifiable = s;
         }
+        if(GuiButton((Rectangle) {1740, 20, 80, 20}, "CSpot")){
+            SpotModifier* s = new CircleSpotModifier(engine_);
+            engine_->modifiers.push_back(s);
+            s->name_ = "CSpot";
+            engine_->selectedModifiable = s;
+        }
+        if(GuiButton((Rectangle) {1820, 20, 80, 20}, "LSpot")){
+            SpotModifier* s = new LineSpotModifier(engine_);
+            engine_->modifiers.push_back(s);
+            s->name_ = "LSpot";
+            engine_->selectedModifiable = s;
+        }
+        
         
         std::string fixturesNames;
         for(unsigned int i = 0; i < engine_->fixtures.size(); i++) {
@@ -147,30 +167,62 @@ namespace MsqLights {
 
     // REDO
     void Engine::Save() {
-        std::vector<char> data;
-        for(unsigned int i = 0; i < fixtures.size(); i++) {
-            std::vector<char> v = fixtures[i]->Serialize();
-            data.insert(data.end(), v.begin(), v.end());
-            data.push_back('\n');
-        }
+        rapidjson::Document d;
+        d.SetObject();
+        rapidjson::Value fixturesArray;
+        fixturesArray.SetArray();
+        rapidjson::Document::AllocatorType& allocator = d.GetAllocator();
+        for(unsigned int i = 0; i < fixtures.size(); i++)
+            fixturesArray.PushBack(fixtures[i]->Serialize(allocator), allocator);
+        d.AddMember("fixtures", fixturesArray, allocator);
 
-        SaveFileData("data", &data[0], data.size());
+        rapidjson::Value modifiersArray;
+        modifiersArray.SetArray();
+        for(unsigned int i = 0; i < modifiers.size(); i++)
+            modifiersArray.PushBack(modifiers[i]->Serialize(allocator), allocator);
+        d.AddMember("modifiers", modifiersArray, allocator);
+
+        rapidjson::StringBuffer sb;
+        rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+        std::ofstream file("data.json");
+        d.Accept(writer);
+        file << sb.GetString();
     }
 
     void Engine::Load() {
-        for(Fixture* f: fixtures)
-            delete f;
+        for(unsigned int i = 0; i < modifiers.size(); i++)
+            delete modifiers[i];
+        modifiers.clear();
+        for(unsigned int i = 0; i < fixtures.size(); i++)
+            delete fixtures[i];
         fixtures.clear();
-        unsigned int dataSize = 0;
-        unsigned char* data = LoadFileData("data", &dataSize);
-        unsigned char* ptrInFile = data;
-        while (ptrInFile - data < dataSize) {
-            Fixture* f = new Fixture(this, ptrInFile);
-            fixtures.push_back(f);
-            ptrInFile += sizeof(Fixture);
-            ptrInFile += std::strlen((char*)ptrInFile);
-            ptrInFile += 2;
+
+        std::ifstream file("data.json");
+        std::stringstream ss;
+        ss << file.rdbuf();
+        rapidjson::Document d;
+        d.Parse(ss.str().c_str());
+
+        auto fixturesArray = d["fixtures"].GetArray();
+        for(unsigned int i = 0; i < fixturesArray.Size(); i++)
+            fixtures.push_back(new Fixture(this, fixturesArray[i]));
+
+        auto modifiersArray = d["modifiers"].GetArray();
+        for(unsigned int i = 0; i < modifiersArray.Size(); i++) {
+            auto mod = modifiersArray[i].GetObject(); 
+
+            const char* typeStr = mod["type"].GetString();
+
+            if(!strcmp(typeStr, "Rectangle"))
+                modifiers.push_back(new RectangleModifier(this, modifiersArray[i]));
+            else if(!strcmp(typeStr, "Spot"))
+                modifiers.push_back(new SpotModifier(this, modifiersArray[i]));
+            else if(!strcmp(typeStr, "CircleSpot"))
+                modifiers.push_back(new CircleSpotModifier(this, modifiersArray[i]));
+            else if(!strcmp(typeStr, "LineSpot"))
+                modifiers.push_back(new LineSpotModifier(this, modifiersArray[i]));
         }
+
     }
 
     void Engine::Init() {
@@ -182,6 +234,7 @@ namespace MsqLights {
         DeselectModifiable();
 
         InitWindow(1920, 1080, "raylib");
+        SetExitKey(0);
 
         SetTargetFPS(60);
 
@@ -195,13 +248,15 @@ namespace MsqLights {
         for(unsigned int i = 0; i < fixtures.size(); i++)
             fixtures[i]->color_ = BLACK;
 
-        for(unsigned int i = 0; i < follow.affectedFixtures_.size(); i++)
-            fixtures[i]->Blend(&follow);
+        if (follow.enabled_)
+            for(unsigned int i = 0; i < follow.affectedFixtures_.size(); i++)
+                fixtures[i]->Blend(&follow);
  
         for(unsigned int i = 0; i < modifiers.size(); i++) {
             for(unsigned int j = 0; j < modifiers[i]->affectedFixtures_.size(); j++) {
                 modifiers[i]->affectedFixtures_[j]->Blend(modifiers[i]);
             }
+            modifiers[i]->Update();
         }
         if(IsKeyPressed(KEY_ENTER))
             activeProp = nullptr;
@@ -223,6 +278,7 @@ namespace MsqLights {
             fixtures[i]->WriteDmx();
         SendDmx();
     }
+
     void Engine::Draw() {
         ClearBackground((Color) {10,10,10,255});
 

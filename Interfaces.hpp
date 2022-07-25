@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
+#include <rapidjson/document.h>
 
 namespace MsqLights {
     class Engine;
 
     class Serializable {
     public:
-        virtual std::vector<char> Serialize() = 0;
+        virtual rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) = 0;
     };
     
     class Modifiable {

@@ -1,6 +1,8 @@
 #include "Fixture.hpp"
 #include "Engine.hpp"
 
+#include "JsonHelper.hpp"
+
 namespace MsqLights {
     unsigned char ResolveDimmer(Color c) {
         return std::max({c.r, c.g, c.b});
@@ -22,6 +24,8 @@ namespace MsqLights {
         arr[2] = rgb[2];
 
         float rg = c.r - c.g;
+        if (rg < 0)
+            rg = 0;
 
         int average = ((int)rgb[0] + (int)rgb[1]) / 2;
         int threshold = 100 * ((float)average / 255);
@@ -82,23 +86,26 @@ namespace MsqLights {
         return (Color) {cast(color_.r), cast(color_.g), cast(color_.b), cast(color_.a)};
     }
 
-    std::vector<char> Fixture::Serialize() {
-        std::vector<char> v;
-        for(unsigned int i = 0; i < sizeof(position_); i++)
-            v.push_back(((char*)&position_)[i]);
-        for(unsigned int i = 0; i < sizeof(lookingAt_); i++)
-            v.push_back(((char*)&lookingAt_)[i]);
-        for(unsigned int i = 0; i < sizeof(color_); i++)
-            v.push_back(((char*)&color_)[i]);
-        for(unsigned int i = 0; i < sizeof(addr_); i++)
-            v.push_back(((char*)&addr_)[i]);
-        for(unsigned int i = 0; i < sizeof(mode_); i++)
-            v.push_back(((char*)&mode_)[i]);
-        const char* name = name_.c_str();
-        unsigned int namesize = name_.size();
-        for(unsigned int j = 0; j <= namesize; j++)
-            v.push_back(name[j]);
-        return v;
+    rapidjson::Value Fixture::Serialize(rapidjson::Document::AllocatorType& allocator) {
+        rapidjson::Value val;
+        val.SetObject();
+        rapidjson::Value name;
+        name.SetString(name_.c_str(), allocator);
+        val.AddMember("name", name, allocator);
+        val.AddMember("position", MsqLights::Serialize(position_, allocator), allocator);
+        val.AddMember("lookingAt", MsqLights::Serialize(lookingAt_, allocator), allocator);
+        val.AddMember("addr", addr_, allocator);
+        val.AddMember("mode", (int)mode_, allocator);
+        return val;
+    }
+
+    Fixture::Fixture(Engine* e, rapidjson::Value& val)
+    : Modifiable(e) {
+        name_ = val["name"].GetString();
+        position_ = Vector2Parse(val["position"]);
+        lookingAt_ = Vector2Parse(val["lookingAt"]);
+        addr_ = val["addr"].GetInt();
+        mode_ = (Mode)val["mode"].GetInt();
     }
 
     Fixture::Fixture(Engine* e)
@@ -119,24 +126,6 @@ namespace MsqLights {
         addr_ = f.addr_;
         mode_ = f.mode_;
         name_ = std::string(f.name_);
-    }
-
-    Fixture::Fixture(Engine* e, unsigned char* data)
-    : Fixture(e) {
-        unsigned char* ptr = data;
-        position_ = *(Vector2*) ptr;
-        ptr += sizeof(Vector2);
-        lookingAt_ = *(Vector2*) ptr;
-        ptr += sizeof(Vector2);
-        color_ = *(ColorInt*) ptr;
-        ptr += sizeof(ColorInt);
-
-        addr_ = *(unsigned int*) ptr;
-        ptr += sizeof(unsigned int);
-        mode_ = *(Mode*) ptr;
-        ptr += sizeof(Mode);
-
-        name_ = std::string((char*)ptr);
     }
 
     Fixture::Fixture(Engine* e, Vector2 position, Vector2 lookingAt, std::string name, unsigned int addr, Mode mode) 
@@ -184,7 +173,7 @@ namespace MsqLights {
 
         GuiLabel((Rectangle) {1500, 240, 200, 20}, "addr");
         int val = addr_;
-        if (GuiValueBox((Rectangle){1700, 240, 220, 20}, nullptr, &val, 0, 512, engine_->activeProp == (void*)&addr_)) {engine_->activeProp = (void*)&addr_;};
+        if (GuiValueBox((Rectangle){1700, 240, 220, 20}, nullptr, &val, 0, 511, engine_->activeProp == (void*)&addr_)) {engine_->activeProp = (void*)&addr_;};
         addr_ = val;
 
         int selectedMode = (int)mode_;

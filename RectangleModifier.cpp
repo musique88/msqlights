@@ -1,11 +1,25 @@
 #include "RectangleModifier.hpp"
 #include "Engine.hpp"
+#include "JsonHelper.hpp"
 
 namespace MsqLights {
+    RectangleModifier::RectangleModifier(Engine* e, rapidjson::Value& val)
+    : Modifier(e, val) {
+        rect_ = RectangleParse(val["rectangle"]);
+    }
+
     RectangleModifier::RectangleModifier(Engine* e)
     : Modifier(e) {
-
+        rect_ = {0,0,0,0};
     }
+
+    rapidjson::Value RectangleModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
+        rapidjson::Value val;
+        val = Modifier::Serialize(allocator);
+        val.AddMember("type", "Rectangle", allocator);
+        val.AddMember("rectangle", MsqLights::Serialize(rect_, allocator), allocator);
+        return val;
+    } 
 
     void RectangleModifier::DrawProps() {
         engine_->DisplayValue(&rect_.x, "rect.x", (Vector2) {1500, 80}, 0, 1500);

@@ -31,10 +31,10 @@ namespace MsqLights {
         static unsigned char cast(int a);
 
         Color GetColor();
-        std::vector<char> Serialize() override;
+        rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
         Fixture(Engine* e);
         Fixture(const Fixture& f);
-        Fixture(Engine* e, unsigned char* data);
+        Fixture(Engine* e, rapidjson::Value& val);
         Fixture(Engine* e, Vector2 position, Vector2 lookingAt, std::string name, unsigned int addr, Mode mode);
 
         void Blend(Modifier* m);

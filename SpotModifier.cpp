@@ -2,6 +2,7 @@
 #include "Engine.hpp"
 #include <algorithm>
 #include <cmath>
+#include "JsonHelper.hpp"
 
 namespace MsqLights {
     // https://stackoverflow.com/a/6853926
@@ -36,6 +37,23 @@ namespace MsqLights {
         float dx = p.x - xx;
         float dy = p.y - yy;
         return sqrt(dx * dx + dy * dy);
+    }
+
+    rapidjson::Value SpotModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
+        rapidjson::Value val;
+        val = Modifier::Serialize(allocator);
+        val.AddMember("type", "Spot", allocator);
+        val.AddMember("position", MsqLights::Serialize(position_, allocator), allocator);
+        val.AddMember("innerRadius", innerRadius_, allocator);
+        val.AddMember("outerRadius", outerRadius_, allocator);
+        return val;
+    } 
+
+    SpotModifier::SpotModifier(Engine* e, rapidjson::Value& val) 
+    : Modifier(e, val){
+        position_ = Vector2Parse(val["position"]);
+        innerRadius_ = val["innerRadius"].GetFloat();
+        outerRadius_ = val["outerRadius"].GetFloat();
     }
 
     SpotModifier::SpotModifier(Engine* e)
