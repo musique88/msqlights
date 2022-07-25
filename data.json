@@ -1,242 +1,87 @@
 {
-    "fixtures": [
-        {
-            "name": "Foh1",
-            "position": {
-                "x": 307.0,
-                "y": 901.0
-            },
-            "lookingAt": {
-                "x": 675.0,
-                "y": 281.0
-            },
-            "addr": 0,
-            "mode": 3
-        },
-        {
-            "name": "Foh2",
-            "position": {
-                "x": 392.0,
-                "y": 912.0
-            },
-            "lookingAt": {
-                "x": 978.0,
-                "y": 331.0
-            },
-            "addr": 8,
-            "mode": 3
-        },
-        {
-            "name": "Foh3",
-            "position": {
-                "x": 478.0,
-                "y": 926.0
-            },
-            "lookingAt": {
-                "x": 775.0,
-                "y": 250.0
-            },
-            "addr": 16,
-            "mode": 3
-        },
-        {
-            "name": "Foh4",
-            "position": {
-                "x": 584.0,
-                "y": 941.0
-            },
-            "lookingAt": {
-                "x": 1127.0,
-                "y": 296.0
-            },
-            "addr": 24,
-            "mode": 3
-        },
-        {
-            "name": "Foh5",
-            "position": {
-                "x": 894.0,
-                "y": 949.0
-            },
-            "lookingAt": {
-                "x": 936.0,
-                "y": 315.0
-            },
-            "addr": 32,
-            "mode": 3
-        },
-        {
-            "name": "Foh6",
-            "position": {
-                "x": 1015.0,
-                "y": 949.0
-            },
-            "lookingAt": {
-                "x": 659.0,
-                "y": 418.0
-            },
-            "addr": 40,
-            "mode": 3
-        },
-        {
-            "name": "Foh7",
-            "position": {
-                "x": 1152.0,
-                "y": 940.0
-            },
-            "lookingAt": {
-                "x": 640.0,
-                "y": 223.0
-            },
-            "addr": 48,
-            "mode": 3
-        },
-        {
-            "name": "Foh8",
-            "position": {
-                "x": 1283.0,
-                "y": 929.0
-            },
-            "lookingAt": {
-                "x": 964.0,
-                "y": 110.0
-            },
-            "addr": 56,
-            "mode": 3
-        },
-        {
-            "name": "bak1",
-            "position": {
-                "x": 636.0,
-                "y": 286.0
-            },
-            "lookingAt": {
-                "x": 640.0,
-                "y": 285.0
-            },
-            "addr": 64,
-            "mode": 3
-        },
-        {
-            "name": "bak2",
-            "position": {
-                "x": 694.0,
-                "y": 290.0
-            },
-            "lookingAt": {
-                "x": 700.0,
-                "y": 293.0
-            },
-            "addr": 72,
-            "mode": 3
-        },
-        {
-            "name": "bak3",
-            "position": {
-                "x": 766.0,
-                "y": 294.0
-            },
-            "lookingAt": {
-                "x": 770.0,
-                "y": 295.0
-            },
-            "addr": 80,
-            "mode": 3
-        },
-        {
-            "name": "bak4",
-            "position": {
-                "x": 811.0,
-                "y": 295.0
-            },
-            "lookingAt": {
-                "x": 810.0,
-                "y": 295.0
-            },
-            "addr": 88,
-            "mode": 3
-        },
-        {
-            "name": "bak5",
-            "position": {
-                "x": 887.0,
-                "y": 299.0
-            },
-            "lookingAt": {
-                "x": 891.0,
-                "y": 299.0
-            },
-            "addr": 96,
-            "mode": 3
-        },
-        {
-            "name": "bak6",
-            "position": {
-                "x": 932.0,
-                "y": 305.0
-            },
-            "lookingAt": {
-                "x": 935.0,
-                "y": 306.0
-            },
-            "addr": 104,
-            "mode": 3
-        },
-        {
-            "name": "bak7",
-            "position": {
-                "x": 982.0,
-                "y": 310.0
-            },
-            "lookingAt": {
-                "x": 981.0,
-                "y": 314.0
-            },
-            "addr": 112,
-            "mode": 3
-        },
-        {
-            "name": "bak8",
-            "position": {
-                "x": 1031.0,
-                "y": 312.0
-            },
-            "lookingAt": {
-                "x": 1037.0,
-                "y": 314.0
-            },
-            "addr": 120,
-            "mode": 3
-        }
-    ],
+    "fixtures": [],
     "modifiers": [
-        {
-            "name": "LSpot",
-            "blendMode": 0,
-            "color": {
-                "r": 0,
-                "g": 0,
-                "b": 0,
-                "a": 255
+        [
+            {
+                "name": "Rectangle",
+                "blendMode": 0,
+                "color": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 255
+                },
+                "affectedFixtures": [],
+                "type": "Rectangle",
+                "rectangle": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "w": 0.0,
+                    "h": 0.0
+                }
+            }
+        ],
+        [
+            {
+                "name": "Spot",
+                "blendMode": 0,
+                "color": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 255
+                },
+                "affectedFixtures": [],
+                "type": "Spot",
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "innerRadius": 0.0,
+                "outerRadius": 0.0
             },
-            "affectedFixtures": [],
-            "type": "LineSpot",
-            "position": {
-                "x": 0.0,
-                "y": 0.0
-            },
-            "innerRadius": 0.0,
-            "outerRadius": 138.0,
-            "origin": {
-                "x": 0.0,
-                "y": 0.0
-            },
-            "destination": {
-                "x": 0.0,
-                "y": 0.0
-            },
-            "speed": 0.10000000149011612,
-            "phase": 0.0
-        }
+            {
+                "name": "CSpot",
+                "blendMode": 0,
+                "color": {
+                    "r": 0,
+                    "g": 0,
+                    "b": 0,
+                    "a": 255
+                },
+                "affectedFixtures": [],
+                "type": "CircleSpot",
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "innerRadius": 0.0,
+                "outerRadius": 0.0,
+                "origin": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "size": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "speed": 0.10000000149011612,
+                "phase": 0.0
+            }
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
     ]
 }

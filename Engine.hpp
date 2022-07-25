@@ -12,12 +12,14 @@
 
 namespace MsqLights {
     const unsigned int DMX_ADDRESSES = 512;
+    const unsigned int PAGES = 16;
 
     class Engine {
     public:
         class EmptyModifiable : public Modifiable {
             int selectedFixture_;
             int selectedModifier_;
+        
         public:
             EmptyModifiable(Engine* engine);
             void DrawProps() override;
@@ -25,7 +27,8 @@ namespace MsqLights {
 
         unsigned char dmxValues[DMX_ADDRESSES];
         std::vector<Fixture*> fixtures;
-        std::vector<Modifier*> modifiers;
+        std::vector<Modifier*> modifiers[PAGES];
+        unsigned int selectedPage;
         Modifiable* selectedModifiable;
         void* activeProp;
         Vector2* positionSelector;
@@ -46,6 +49,7 @@ namespace MsqLights {
         void MouseLeftClick();
         void SendDmx();
         void DeselectModifiable();
+        std::vector<Modifier*>* GetModifiers();
 
         void Save();
         void Load();

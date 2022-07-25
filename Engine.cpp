@@ -25,25 +25,25 @@ namespace MsqLights {
         }
         if(GuiButton((Rectangle) {1580, 20, 80, 20}, "Rectangle")){
             RectangleModifier* r = new RectangleModifier(engine_);
-            engine_->modifiers.push_back(r);
+            engine_->GetModifiers()->push_back(r);
             r->name_ = "Rectangle";
             engine_->selectedModifiable = r;
         }
         if(GuiButton((Rectangle) {1660, 20, 80, 20}, "Spot")){
             SpotModifier* s = new SpotModifier(engine_);
-            engine_->modifiers.push_back(s);
+            engine_->GetModifiers()->push_back(s);
             s->name_ = "Spot";
             engine_->selectedModifiable = s;
         }
         if(GuiButton((Rectangle) {1740, 20, 80, 20}, "CSpot")){
             SpotModifier* s = new CircleSpotModifier(engine_);
-            engine_->modifiers.push_back(s);
+            engine_->GetModifiers()->push_back(s);
             s->name_ = "CSpot";
             engine_->selectedModifiable = s;
         }
         if(GuiButton((Rectangle) {1820, 20, 80, 20}, "LSpot")){
             SpotModifier* s = new LineSpotModifier(engine_);
-            engine_->modifiers.push_back(s);
+            engine_->GetModifiers()->push_back(s);
             s->name_ = "LSpot";
             engine_->selectedModifiable = s;
         }
@@ -63,19 +63,19 @@ namespace MsqLights {
                 engine_->fixtures.erase(engine_->fixtures.begin() + selectedFixture_); 
         }
         std::string modifiersNames;
-        for(unsigned int i = 0; i < engine_->modifiers.size(); i++) {
-            modifiersNames += engine_->modifiers[i]->name_;
+        for(unsigned int i = 0; i < engine_->GetModifiers()->size(); i++) {
+            modifiersNames += engine_->GetModifiers()->at(i)->name_;
             modifiersNames += ";";
         }
         modifiersNames.erase(modifiersNames.end() - 1);
 
-        if (!engine_->modifiers.empty()) {
+        if (!engine_->GetModifiers()->empty()) {
             if (GuiButton((Rectangle){1800, 60, 60, 20}, "Select"))
-                engine_->selectedModifiable = engine_->modifiers[selectedModifier_];
+                engine_->selectedModifiable = engine_->GetModifiers()->at(selectedModifier_);
             if (GuiButton((Rectangle){1860, 60, 60, 20}, "Delete")) {
-                auto m = engine_->modifiers.begin() + selectedModifier_;
+                auto m = engine_->GetModifiers()->begin() + selectedModifier_;
                 delete (*m);
-                engine_->modifiers.erase(m); 
+                engine_->GetModifiers()->erase(m); 
             }
         }
         
@@ -94,6 +94,13 @@ namespace MsqLights {
             else
                 engine_->activeProp = &selectedFixture_;
         }
+
+        for(unsigned int i = 0; i < PAGES; i++) {
+            if (GuiButton((Rectangle) {(float)(1500 + i * 20), 1040, 20, 20}, TextFormat("%d", i)))
+                engine_->selectedPage = i;
+        }
+
+        GuiLabel((Rectangle) {1820, 1040, 100, 20}, TextFormat("PAGE: %d", engine_->selectedPage));
     }
 
     Engine::Engine() 
@@ -102,6 +109,11 @@ namespace MsqLights {
         activeProp = nullptr;
         debug = false;
         positionSelector = nullptr;
+        selectedPage = 0;
+    }
+
+    std::vector<Modifier*>* Engine::GetModifiers() {
+        return &modifiers[selectedPage];
     }
 
     void Engine::DisplayValue(int* value, std::string propName, Vector2 pos, int min, int max) {
@@ -150,9 +162,9 @@ namespace MsqLights {
                 break;
             }
         }
-        for(unsigned int i = 0; i < modifiers.size(); i++) {
-            if(CheckCollisionPointRec(GetMousePosition(), modifiers[i]->GetSelector())) {
-                selectedModifiable = modifiers[i];
+        for(unsigned int i = 0; i < GetModifiers()->size(); i++) {
+            if(CheckCollisionPointRec(GetMousePosition(), GetModifiers()->at(i)->GetSelector())) {
+                selectedModifiable = GetModifiers()->at(i);
                 break;
             }
         }
@@ -176,11 +188,16 @@ namespace MsqLights {
             fixturesArray.PushBack(fixtures[i]->Serialize(allocator), allocator);
         d.AddMember("fixtures", fixturesArray, allocator);
 
-        rapidjson::Value modifiersArray;
-        modifiersArray.SetArray();
-        for(unsigned int i = 0; i < modifiers.size(); i++)
-            modifiersArray.PushBack(modifiers[i]->Serialize(allocator), allocator);
-        d.AddMember("modifiers", modifiersArray, allocator);
+        rapidjson::Value allTheModifiers;
+        allTheModifiers.SetArray();
+        for(unsigned int i = 0; i < PAGES; i++) {
+            rapidjson::Value modifiersPage;
+            modifiersPage.SetArray();
+            for(unsigned int j = 0; j < modifiers[i].size(); j++)
+                modifiersPage.PushBack(modifiers[i][j]->Serialize(allocator), allocator);
+            allTheModifiers.PushBack(modifiersPage, allocator);
+        }
+        d.AddMember("modifiers", allTheModifiers, allocator);
 
         rapidjson::StringBuffer sb;
         rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -190,9 +207,9 @@ namespace MsqLights {
     }
 
     void Engine::Load() {
-        for(unsigned int i = 0; i < modifiers.size(); i++)
-            delete modifiers[i];
-        modifiers.clear();
+        for(unsigned int i = 0; i < GetModifiers()->size(); i++)
+            delete GetModifiers()->at(i);
+        GetModifiers()->clear();
         for(unsigned int i = 0; i < fixtures.size(); i++)
             delete fixtures[i];
         fixtures.clear();
@@ -207,20 +224,22 @@ namespace MsqLights {
         for(unsigned int i = 0; i < fixturesArray.Size(); i++)
             fixtures.push_back(new Fixture(this, fixturesArray[i]));
 
-        auto modifiersArray = d["modifiers"].GetArray();
-        for(unsigned int i = 0; i < modifiersArray.Size(); i++) {
-            auto mod = modifiersArray[i].GetObject(); 
+        auto allTheModifiers = d["modifiers"].GetArray();
+        for(unsigned int i = 0; i < allTheModifiers.Size(); i++) {
+            auto page = allTheModifiers[i].GetArray(); 
+            for(unsigned int j = 0; j < page.Size(); j++) {
+                auto mod = page[j].GetObject();
+                const char* typeStr = mod["type"].GetString();
 
-            const char* typeStr = mod["type"].GetString();
-
-            if(!strcmp(typeStr, "Rectangle"))
-                modifiers.push_back(new RectangleModifier(this, modifiersArray[i]));
-            else if(!strcmp(typeStr, "Spot"))
-                modifiers.push_back(new SpotModifier(this, modifiersArray[i]));
-            else if(!strcmp(typeStr, "CircleSpot"))
-                modifiers.push_back(new CircleSpotModifier(this, modifiersArray[i]));
-            else if(!strcmp(typeStr, "LineSpot"))
-                modifiers.push_back(new LineSpotModifier(this, modifiersArray[i]));
+                if(!strcmp(typeStr, "Rectangle"))
+                    GetModifiers()->push_back(new RectangleModifier(this, page[j]));
+                else if(!strcmp(typeStr, "Spot"))
+                    GetModifiers()->push_back(new SpotModifier(this, page[j]));
+                else if(!strcmp(typeStr, "CircleSpot"))
+                    GetModifiers()->push_back(new CircleSpotModifier(this, page[j]));
+                else if(!strcmp(typeStr, "LineSpot"))
+                    GetModifiers()->push_back(new LineSpotModifier(this, page[j]));
+            }
         }
 
     }
@@ -252,11 +271,11 @@ namespace MsqLights {
             for(unsigned int i = 0; i < follow.affectedFixtures_.size(); i++)
                 fixtures[i]->Blend(&follow);
  
-        for(unsigned int i = 0; i < modifiers.size(); i++) {
-            for(unsigned int j = 0; j < modifiers[i]->affectedFixtures_.size(); j++) {
-                modifiers[i]->affectedFixtures_[j]->Blend(modifiers[i]);
+        for(unsigned int i = 0; i < GetModifiers()->size(); i++) {
+            for(unsigned int j = 0; j < GetModifiers()->at(i)->affectedFixtures_.size(); j++) {
+                GetModifiers()->at(i)->affectedFixtures_[j]->Blend(GetModifiers()->at(i));
             }
-            modifiers[i]->Update();
+            GetModifiers()->at(i)->Update();
         }
         if(IsKeyPressed(KEY_ENTER))
             activeProp = nullptr;
@@ -291,8 +310,8 @@ namespace MsqLights {
         for(unsigned int i = 0; i < fixtures.size(); i++) {
             fixtures[i]->Draw();
         }
-        for(unsigned int i = 0; i < modifiers.size(); i++) {
-            modifiers[i]->Draw();
+        for(unsigned int i = 0; i < GetModifiers()->size(); i++) {
+            GetModifiers()->at(i)->Draw();
         }
 
         follow.Draw();
