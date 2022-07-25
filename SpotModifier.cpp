@@ -62,11 +62,11 @@ namespace MsqLights {
     }
 
     void SpotModifier::DrawProps() {
-        engine_->DisplayValue(&position_.x, "pos.x", (Vector2) {1500, 80}, 0, 1500);
-        engine_->DisplayValue(&position_.y, "pos.y", (Vector2) {1500, 120}, 0, 1080);
-        engine_->DisplayValue(&innerRadius_, "innerRadius", (Vector2) {1500, 160}, 0, 1080);
-        engine_->DisplayValue(&outerRadius_, "outerRadius", (Vector2) {1500, 200}, 0, 1080);
-        engine_->DisplayPositionSelector(&position_, "Origin", (Vector2) {1500, 240});
+        engine_->DisplayValue(&position_.x, "pos.x", (Vector2) {WIDTH - PANELSIZE, 80}, 0, 1500);
+        engine_->DisplayValue(&position_.y, "pos.y", (Vector2) {WIDTH - PANELSIZE, 120}, 0, 1080);
+        engine_->DisplayValue(&innerRadius_, "innerRadius", (Vector2) {WIDTH - PANELSIZE, 160}, 0, 1080);
+        engine_->DisplayValue(&outerRadius_, "outerRadius", (Vector2) {WIDTH - PANELSIZE, 200}, 0, 1080);
+        engine_->DisplayPositionSelector(&position_, "Origin", (Vector2) {WIDTH - PANELSIZE, 240});
         Modifier::DrawProps();
     }
 

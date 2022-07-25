@@ -10,7 +10,6 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
-
 namespace MsqLights {
     Engine::EmptyModifiable::EmptyModifiable(Engine* engine)
     : Modifiable(engine) {
@@ -19,29 +18,29 @@ namespace MsqLights {
     }
 
     void Engine::EmptyModifiable::DrawProps() {
-        if(GuiButton((Rectangle) {1500, 20, 80, 20}, "Fixture")){
+        if(GuiButton((Rectangle) {WIDTH - PANELSIZE, 20, 80, 20}, "Fixture")){
             engine_->fixtures.push_back(new Fixture(engine_, (Vector2){500, 500}, (Vector2){500, 500}, "Fixture", 0, Fixture::Mode::Dimmer));
             engine_->selectedModifiable = engine_->fixtures[engine_->fixtures.size() - 1];
         }
-        if(GuiButton((Rectangle) {1580, 20, 80, 20}, "Rectangle")){
+        if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 80, 20, 80, 20}, "Rectangle")){
             RectangleModifier* r = new RectangleModifier(engine_);
             engine_->GetModifiers()->push_back(r);
             r->name_ = "Rectangle";
             engine_->selectedModifiable = r;
         }
-        if(GuiButton((Rectangle) {1660, 20, 80, 20}, "Spot")){
+        if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 160, 20, 80, 20}, "Spot")){
             SpotModifier* s = new SpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "Spot";
             engine_->selectedModifiable = s;
         }
-        if(GuiButton((Rectangle) {1740, 20, 80, 20}, "CSpot")){
+        if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 240, 20, 80, 20}, "CSpot")){
             SpotModifier* s = new CircleSpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "CSpot";
             engine_->selectedModifiable = s;
         }
-        if(GuiButton((Rectangle) {1820, 20, 80, 20}, "LSpot")){
+        if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 320, 20, 80, 20}, "LSpot")){
             SpotModifier* s = new LineSpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "LSpot";
@@ -57,9 +56,9 @@ namespace MsqLights {
         fixturesNames.erase(fixturesNames.end() - 1);
 
         if (!engine_->fixtures.empty()) {
-            if (GuiButton((Rectangle){1800, 40, 60, 20}, "Select"))
+            if (GuiButton((Rectangle){WIDTH - PANELSIZE + 300, 40, 60, 20}, "Select"))
                 engine_->selectedModifiable = engine_->fixtures[selectedFixture_];
-            if (GuiButton((Rectangle){1860, 40, 60, 20}, "Delete"))
+            if (GuiButton((Rectangle){WIDTH - PANELSIZE + 360, 40, 60, 20}, "Delete"))
                 engine_->fixtures.erase(engine_->fixtures.begin() + selectedFixture_); 
         }
         std::string modifiersNames;
@@ -70,9 +69,9 @@ namespace MsqLights {
         modifiersNames.erase(modifiersNames.end() - 1);
 
         if (!engine_->GetModifiers()->empty()) {
-            if (GuiButton((Rectangle){1800, 60, 60, 20}, "Select"))
+            if (GuiButton((Rectangle){WIDTH - PANELSIZE + 300, 60, 60, 20}, "Select"))
                 engine_->selectedModifiable = engine_->GetModifiers()->at(selectedModifier_);
-            if (GuiButton((Rectangle){1860, 60, 60, 20}, "Delete")) {
+            if (GuiButton((Rectangle){WIDTH - PANELSIZE + 360, 60, 60, 20}, "Delete")) {
                 auto m = engine_->GetModifiers()->begin() + selectedModifier_;
                 delete (*m);
                 engine_->GetModifiers()->erase(m); 
@@ -81,14 +80,14 @@ namespace MsqLights {
         
         engine_->follow.DrawProps();
 
-        if (GuiDropdownBox((Rectangle) {1500, 60, 300, 20}, modifiersNames.c_str(), &selectedModifier_, engine_->activeProp == &selectedModifier_)) {
+        if (GuiDropdownBox((Rectangle) {WIDTH - PANELSIZE, 60, 300, 20}, modifiersNames.c_str(), &selectedModifier_, engine_->activeProp == &selectedModifier_)) {
             if (engine_->activeProp == &selectedModifier_)
                 engine_->activeProp = nullptr;
             else
                 engine_->activeProp = &selectedModifier_;
         }
 
-        if (GuiDropdownBox((Rectangle) {1500, 40, 300, 20}, fixturesNames.c_str(), &selectedFixture_, engine_->activeProp == &selectedFixture_)) {
+        if (GuiDropdownBox((Rectangle) {WIDTH - PANELSIZE, 40, 300, 20}, fixturesNames.c_str(), &selectedFixture_, engine_->activeProp == &selectedFixture_)) {
             if (engine_->activeProp == &selectedFixture_)
                 engine_->activeProp = nullptr;
             else
@@ -96,11 +95,11 @@ namespace MsqLights {
         }
 
         for(unsigned int i = 0; i < PAGES; i++) {
-            if (GuiButton((Rectangle) {(float)(1500 + i * 20), 1040, 20, 20}, TextFormat("%d", i)))
+            if (GuiButton((Rectangle) {(float)(WIDTH - PANELSIZE + i * 20), HEIGHT - 40, 20, 20}, TextFormat("%d", i)))
                 engine_->selectedPage = i;
         }
 
-        GuiLabel((Rectangle) {1820, 1040, 100, 20}, TextFormat("PAGE: %d", engine_->selectedPage));
+        GuiLabel((Rectangle) {(WIDTH - PANELSIZE) + 320, HEIGHT - 40, 100, 20}, TextFormat("PAGE: %d", engine_->selectedPage));
     }
 
     Engine::Engine() 
@@ -143,12 +142,29 @@ namespace MsqLights {
             positionSelector = position;
         }
     }
+
+    void Engine::DisplaySelectedFixtures(std::vector<Fixture*>* affectedFixtures, Vector2 p) {
+         for(unsigned int i = 0; i < fixtures.size(); i++) {
+            auto position = std::find(affectedFixtures->begin(), affectedFixtures->end(), fixtures[i]);
+            bool actived = position != affectedFixtures->end();
+            bool nextActived = GuiToggle((Rectangle) {(float)(p.x + (i % 4) * 105), p.y + (float)(i/4) * 20, 105, 20}, fixtures[i]->name_.c_str(), actived);
+            bool clicked = actived != nextActived;
+            if(clicked) {
+                if(!nextActived)
+                    affectedFixtures->erase(position);
+                else
+                    affectedFixtures->push_back(fixtures[i]);
+            }
+        }
+        
+    }
+
     void Engine::SelectPosition() {
         *positionSelector = GetMousePosition();
         positionSelector = nullptr;
     }
     void Engine::MouseLeftClick() {
-        if (GetMousePosition().x > 1500) return;
+        if (GetMousePosition().x > WIDTH - PANELSIZE) return;
         if (positionSelector != nullptr) {
             SelectPosition();
             return;
@@ -252,7 +268,7 @@ namespace MsqLights {
     
         DeselectModifiable();
 
-        InitWindow(1920, 1080, "raylib");
+        InitWindow(1366, 768, "MSQ LIGHTS");
         SetExitKey(0);
 
         SetTargetFPS(60);
@@ -316,13 +332,13 @@ namespace MsqLights {
 
         follow.Draw();
 
-        GuiPanel((Rectangle) {1500, 0, 420, 1080}, "Properties");
+        GuiPanel((Rectangle) {946, 0, 420, 768}, "Properties");
         if(positionSelector != nullptr) {
-            GuiLabel((Rectangle) {1500, 500, 420, 20}, "Choose a position");
+            GuiLabel((Rectangle) {946, 500, 420, 20}, "Choose a position");
         }
         else {
             selectedModifiable->DrawProps();
-            if(GuiButton((Rectangle){1500, 1060, 420, 20}, "Deselect"))
+            if(GuiButton((Rectangle){946, 748, 420, 20}, "Deselect"))
                 DeselectModifiable();
         }
     }

@@ -10,6 +10,10 @@
 #include "SpotModifier.hpp"
 #include "Follow.hpp"
 
+#define WIDTH 1366
+#define HEIGHT 768 
+#define PANELSIZE 420
+
 namespace MsqLights {
     const unsigned int DMX_ADDRESSES = 512;
     const unsigned int PAGES = 16;
@@ -43,8 +47,9 @@ namespace MsqLights {
         void DisplayValue(int* value, std::string propName, Vector2 pos, int min, int max);
         void DisplayValue(float* value, std::string propName, Vector2 pos, int min, int max);
         void DisplayValue(std::string* value, std::string propName, Vector2 pos);
-
         void DisplayPositionSelector(Vector2* position, std::string propName, Vector2 pos);
+        void DisplaySelectedFixtures(std::vector<Fixture*>* selectedFixtures, Vector2 pos);
+
         void SelectPosition();
         void MouseLeftClick();
         void SendDmx();

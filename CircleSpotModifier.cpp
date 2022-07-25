@@ -37,22 +37,22 @@ namespace MsqLights {
     }
 
     void CircleSpotModifier::DrawProps() {
-        engine_->DisplayValue(&origin_.x, "pos.x", (Vector2) {1500, 80}, 0, 1500);
-        engine_->DisplayValue(&origin_.y, "pos.y", (Vector2) {1500, 120}, 0, 1080);
-        engine_->DisplayValue(&innerRadius_, "innerRadius", (Vector2) {1500, 160}, 0, 1080);
-        engine_->DisplayValue(&outerRadius_, "outerRadius", (Vector2) {1500, 200}, 0, 1080);
-        engine_->DisplayPositionSelector(&origin_, "Origin", (Vector2) {1500, 240});
+        engine_->DisplayValue(&origin_.x, "pos.x", (Vector2) {WIDTH - PANELSIZE, 80}, 0, 1500);
+        engine_->DisplayValue(&origin_.y, "pos.y", (Vector2) {WIDTH - PANELSIZE, 120}, 0, 1080);
+        engine_->DisplayValue(&innerRadius_, "innerRadius", (Vector2) {WIDTH - PANELSIZE, 160}, 0, 1080);
+        engine_->DisplayValue(&outerRadius_, "outerRadius", (Vector2) {WIDTH - PANELSIZE, 200}, 0, 1080);
+        engine_->DisplayPositionSelector(&origin_, "Origin", (Vector2) {WIDTH - PANELSIZE, 240});
 
         float speed = speed_ * 1000;
-        engine_->DisplayValue(&speed, "speed (kHz)", (Vector2) {1500, 280}, -1000, 1000);
+        engine_->DisplayValue(&speed, "speed (kHz)", (Vector2) {WIDTH - PANELSIZE, 280}, -1000, 1000);
         speed_ = speed / 1000;
 
         float phase = phase_ * 100;
-        engine_->DisplayValue(&phase, "phase (%)", (Vector2) {1500, 320}, 0, 100);
+        engine_->DisplayValue(&phase, "phase (%)", (Vector2) {WIDTH - PANELSIZE, 320}, 0, 100);
         phase_ = phase / 100;
 
-        engine_->DisplayValue(&size_.x, "size.x", (Vector2) {1500, 360}, 0, 1500);
-        engine_->DisplayValue(&size_.y, "size.y", (Vector2) {1500, 400}, 0, 1080);
+        engine_->DisplayValue(&size_.x, "size.x", (Vector2) {WIDTH - PANELSIZE, 360}, 0, 1500);
+        engine_->DisplayValue(&size_.y, "size.y", (Vector2) {WIDTH - PANELSIZE, 400}, 0, 1080);
         
         Modifier::DrawProps();
     }

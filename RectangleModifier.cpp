@@ -22,11 +22,11 @@ namespace MsqLights {
     } 
 
     void RectangleModifier::DrawProps() {
-        engine_->DisplayValue(&rect_.x, "rect.x", (Vector2) {1500, 80}, 0, 1500);
-        engine_->DisplayValue(&rect_.y, "rect.y", (Vector2) {1500, 120}, 0, 1080);
-        engine_->DisplayValue(&rect_.width, "rect.w", (Vector2) {1500, 160}, 0, 1500);
-        engine_->DisplayValue(&rect_.height, "rect.h", (Vector2) {1500, 200}, 0, 1080);
-        engine_->DisplayPositionSelector((Vector2*)&rect_, "Origin", (Vector2) {1500, 240});
+        engine_->DisplayValue(&rect_.x, "rect.x", (Vector2) {WIDTH - PANELSIZE, 80}, 0, 1500);
+        engine_->DisplayValue(&rect_.y, "rect.y", (Vector2) {WIDTH - PANELSIZE, 120}, 0, 1080);
+        engine_->DisplayValue(&rect_.width, "rect.w", (Vector2) {WIDTH - PANELSIZE, 160}, 0, 1500);
+        engine_->DisplayValue(&rect_.height, "rect.h", (Vector2) {WIDTH - PANELSIZE, 200}, 0, 1080);
+        engine_->DisplayPositionSelector((Vector2*)&rect_, "Origin", (Vector2) {WIDTH - PANELSIZE, 240});
         Modifier::DrawProps();
     } 
 

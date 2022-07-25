@@ -162,22 +162,22 @@ namespace MsqLights {
     }
 
     void Fixture::DrawProps() {
-        engine_->DisplayValue(&name_, "name", (Vector2){1500, 20});
-        engine_->DisplayValue(&position_.x, "position.x", (Vector2){1500, 60}, 0, 1500);
-        engine_->DisplayValue(&position_.y, "position.y", (Vector2){1500, 100}, 0, 1080);
-        engine_->DisplayValue(&lookingAt_.x, "lookingAt.x", (Vector2){1500, 140}, 0, 1500);
-        engine_->DisplayValue(&lookingAt_.y, "lookingAt.y", (Vector2){1500, 180}, 0, 1080);
-        engine_->DisplayPositionSelector(&position_, "Position", (Vector2){1500, 220});
-        engine_->DisplayPositionSelector(&lookingAt_, "LookingAt", (Vector2){1600, 220});
-        DrawRectangleRec((Rectangle) {1700, 220, 220, 20}, GetColor());
+        engine_->DisplayValue(&name_, "name", (Vector2){WIDTH - PANELSIZE, 20});
+        engine_->DisplayValue(&position_.x, "position.x", (Vector2){WIDTH - PANELSIZE, 60}, 0, 1500);
+        engine_->DisplayValue(&position_.y, "position.y", (Vector2){WIDTH - PANELSIZE, 100}, 0, 1080);
+        engine_->DisplayValue(&lookingAt_.x, "lookingAt.x", (Vector2){WIDTH - PANELSIZE, 140}, 0, 1500);
+        engine_->DisplayValue(&lookingAt_.y, "lookingAt.y", (Vector2){WIDTH - PANELSIZE, 180}, 0, 1080);
+        engine_->DisplayPositionSelector(&position_, "Position", (Vector2){WIDTH - PANELSIZE, 220});
+        engine_->DisplayPositionSelector(&lookingAt_, "LookingAt", (Vector2){WIDTH - PANELSIZE + 100, 220});
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE + 200, 220, 220, 20}, GetColor());
 
-        GuiLabel((Rectangle) {1500, 240, 200, 20}, "addr");
+        GuiLabel((Rectangle) {WIDTH - PANELSIZE, 240, 200, 20}, "addr");
         int val = addr_;
-        if (GuiValueBox((Rectangle){1700, 240, 220, 20}, nullptr, &val, 0, 511, engine_->activeProp == (void*)&addr_)) {engine_->activeProp = (void*)&addr_;};
+        if (GuiValueBox((Rectangle){WIDTH - PANELSIZE + 200, 240, 220, 20}, nullptr, &val, 0, 511, engine_->activeProp == (void*)&addr_)) {engine_->activeProp = (void*)&addr_;};
         addr_ = val;
 
         int selectedMode = (int)mode_;
-        if (GuiDropdownBox((Rectangle) {1500, 260, 300, 20}, "Dimmer;RGB;RGBA;RGBAW", &selectedMode, engine_->activeProp == &mode_)) {
+        if (GuiDropdownBox((Rectangle) {WIDTH - PANELSIZE, 260, 300, 20}, "Dimmer;RGB;RGBA;RGBAW", &selectedMode, engine_->activeProp == &mode_)) {
             mode_ = (Mode)selectedMode;
             if (engine_->activeProp == &mode_)
                 engine_->activeProp = nullptr;
@@ -185,12 +185,12 @@ namespace MsqLights {
                 engine_->activeProp = &mode_;
         }
 
-        DrawRectangleRec((Rectangle) {1550, 980, 370 * ((float)color_.r / 255.f), 20}, RED);
-        GuiLabel((Rectangle) {1500, 980, 50, 20}, TextFormat("%d", color_.r));
-        DrawRectangleRec((Rectangle) {1550, 1000, 370 * ((float)color_.g / 255.f), 20}, GREEN);
-        GuiLabel((Rectangle) {1500, 1000, 50, 20}, TextFormat("%d", color_.g));
-        DrawRectangleRec((Rectangle) {1550, 1020, 370 * ((float)color_.b / 255.f), 20}, BLUE);
-        GuiLabel((Rectangle) {1500, 1020, 50, 20}, TextFormat("%d", color_.b));
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE + 50, HEIGHT - 100, 370 * ((float)color_.r / 255.f), 20}, RED);
+        GuiLabel((Rectangle) {WIDTH - PANELSIZE, HEIGHT - 100, 50, 20}, TextFormat("%d", color_.r));
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE + 50, HEIGHT - 80, 370 * ((float)color_.g / 255.f), 20}, GREEN);
+        GuiLabel((Rectangle) {WIDTH - PANELSIZE, HEIGHT - 80, 50, 20}, TextFormat("%d", color_.g));
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE + 50, HEIGHT - 60, 370 * ((float)color_.b / 255.f), 20}, BLUE);
+        GuiLabel((Rectangle) {WIDTH - PANELSIZE, HEIGHT - 60, 50, 20}, TextFormat("%d", color_.b));
     }
 
     void Fixture::WriteDmx() {
