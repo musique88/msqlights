@@ -3,6 +3,18 @@
 #include "JsonHelper.hpp"
 
 namespace MsqLights {
+
+    void Modifier::SetParam(std::string paramname, float val) {
+        if(paramname == "color.r")
+            color_.r = val;
+        else if(paramname == "color.g")
+            color_.g = val;
+        else if(paramname == "color.b")
+            color_.b = val;
+        else if(paramname == "blendmode")
+            blendMode_ = (Blend)(int)val;
+    }
+
     rapidjson::Value Modifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
         rapidjson::Value val;
         val.SetObject();
@@ -45,6 +57,7 @@ namespace MsqLights {
     : Modifiable(engine) {
         blendMode_ = Blend::Addition;
         color_ = {0,0,0,255};
+        type_ = "None";
     }
 
     void Modifier::DrawProps() {

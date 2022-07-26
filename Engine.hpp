@@ -9,6 +9,7 @@
 #include "RectangleModifier.hpp"
 #include "SpotModifier.hpp"
 #include "Follow.hpp"
+#include "OscServer.hpp"
 
 #define WIDTH 1366
 #define HEIGHT 768 
@@ -41,6 +42,7 @@ namespace MsqLights {
         bool debug;
         ola::DmxBuffer dmxBuffer;
         ola::client::StreamingClient dmxClient;
+        OscServer oscServer;
 
         Engine();
         

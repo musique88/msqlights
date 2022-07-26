@@ -8,6 +8,27 @@ namespace MsqLights {
         return sqrt(v.x * v.x + v.y * v.y);
     }
 
+
+    void CircleSpotModifier::SetParam(std::string paramname, float val) {
+        Modifier::SetParam(paramname, val);
+        if(paramname == "pos.x")
+            origin_.x = val;
+        else if(paramname == "pos.y")
+            origin_.y = val;
+        else if(paramname == "innerRadius")
+            innerRadius_ = val;
+        else if(paramname == "outerRadius")
+            outerRadius_ = val;
+        else if(paramname == "speed")
+            speed_ = val;
+        else if(paramname == "phase")
+            phase_ = val;
+        else if(paramname == "size.x")
+            size_.x = val;
+        else if(paramname == "size.y")
+            size_.y = val;
+    }
+
     rapidjson::Value CircleSpotModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
         rapidjson::Value val;
         val = SpotModifier::Serialize(allocator);
@@ -29,6 +50,7 @@ namespace MsqLights {
 
     CircleSpotModifier::CircleSpotModifier(Engine* e) 
     : SpotModifier(e) {
+        type_ = "CircleSpot";
         origin_ = (Vector2) {0,0};
         size_ = (Vector2) {0,0};
         speed_ = 0.10f;

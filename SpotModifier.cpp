@@ -39,6 +39,7 @@ namespace MsqLights {
         return sqrt(dx * dx + dy * dy);
     }
 
+
     rapidjson::Value SpotModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
         rapidjson::Value val;
         val = Modifier::Serialize(allocator);
@@ -49,6 +50,18 @@ namespace MsqLights {
         return val;
     } 
 
+    void SpotModifier::SetParam(std::string paramname, float value) {
+        Modifier::SetParam(paramname, value);
+        if(paramname == "pos.x")
+            position_.x = value;
+        else if(paramname == "pos.y")
+            position_.y = value;
+        else if(paramname == "innerRadius")
+            innerRadius_ = value;
+        else if(paramname == "outerRadius")
+            outerRadius_ = value;
+    }
+
     SpotModifier::SpotModifier(Engine* e, rapidjson::Value& val) 
     : Modifier(e, val){
         position_ = Vector2Parse(val["position"]);
@@ -58,7 +71,7 @@ namespace MsqLights {
 
     SpotModifier::SpotModifier(Engine* e)
     : Modifier(e) {
-
+        type_ = "Spot";
     }
 
     void SpotModifier::DrawProps() {

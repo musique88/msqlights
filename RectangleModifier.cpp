@@ -10,7 +10,20 @@ namespace MsqLights {
 
     RectangleModifier::RectangleModifier(Engine* e)
     : Modifier(e) {
+        type_ = "Rectangle";
         rect_ = {0,0,0,0};
+    }
+
+    void RectangleModifier::SetParam(std::string paramname, float val) {
+        Modifier::SetParam(paramname, val);
+        if(paramname == "rect.x")
+            rect_.x = val;
+        else if(paramname == "rect.y")
+            rect_.y = val;
+        else if(paramname == "rect.w")
+            rect_.width= val;
+        else if(paramname == "rect.h")
+            rect_.height = val;
     }
 
     rapidjson::Value RectangleModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {

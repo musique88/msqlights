@@ -10,6 +10,7 @@ namespace MsqLights {
         RectangleModifier(Engine* e);
         RectangleModifier(Engine* e, rapidjson::Value& val);
 
+        virtual void SetParam(std::string str, float val) override;
         void DrawProps() override;
         void Draw() override;
         Rectangle GetSelector() override;

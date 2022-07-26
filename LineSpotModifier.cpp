@@ -4,6 +4,26 @@
 
 namespace MsqLights {
 
+    void LineSpotModifier::SetParam(std::string paramname, float val) {
+        Modifier::SetParam(paramname, val);
+        if(paramname == "pos.x")
+            origin_.x = val;
+        else if(paramname == "pos.y")
+            origin_.y = val;
+        else if(paramname == "innerRadius")
+            innerRadius_ = val;
+        else if(paramname == "outerRadius")
+            outerRadius_ = val;
+        else if(paramname == "speed")
+            speed_ = val;
+        else if(paramname == "phase")
+            phase_ = val;
+        else if(paramname == "destination.x")
+            destination_.x = val;
+        else if(paramname == "destination.y")
+            destination_.y = val;
+    }
+
     LineSpotModifier::LineSpotModifier(Engine* e, rapidjson::Value& val)
     : SpotModifier(e, val) {
         origin_ = Vector2Parse(val["origin"]);
@@ -14,6 +34,7 @@ namespace MsqLights {
 
     LineSpotModifier::LineSpotModifier(Engine* e) 
     : SpotModifier(e) {
+        type_ = "LineSpot";
         origin_ = (Vector2) {0,0};
         destination_ = (Vector2) {0,0};
         speed_ = 0.10f;
@@ -48,8 +69,8 @@ namespace MsqLights {
         engine_->DisplayValue(&phase, "phase (%)", (Vector2) {WIDTH - PANELSIZE, 320}, 0, 100);
         phase_ = phase / 100;
 
-        engine_->DisplayValue(&destination_.x, "size.x", (Vector2) {WIDTH - PANELSIZE, 360}, 0, 1500);
-        engine_->DisplayValue(&destination_.y, "size.y", (Vector2) {WIDTH - PANELSIZE, 400}, 0, 1080);
+        engine_->DisplayValue(&destination_.x, "destination.x", (Vector2) {WIDTH - PANELSIZE, 360}, 0, 1500);
+        engine_->DisplayValue(&destination_.y, "destination.y", (Vector2) {WIDTH - PANELSIZE, 400}, 0, 1080);
         engine_->DisplayPositionSelector(&destination_, "Destination", (Vector2) {WIDTH - PANELSIZE, 440});
         
         Modifier::DrawProps();

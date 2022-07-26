@@ -21,9 +21,12 @@ namespace MsqLights {
         Color color_;
         std::vector<Fixture*> affectedFixtures_;
         std::string name_;
+        std::string type_;
 
         Modifier(Engine* engine);
         Modifier(Engine* engine, rapidjson::Value& val);
+
+        virtual void SetParam(std::string paramname, float val);
 
         rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
         void DrawProps() override;

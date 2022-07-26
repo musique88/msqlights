@@ -1,3 +1,3 @@
 #!/bin/bash
 
-clang++ *.cpp -lraylib -lola -lolacommon -g
+clang++ *.cpp tinyosc/tinyosc.c -lraylib -lola -lolacommon -g

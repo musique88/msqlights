@@ -12,6 +12,7 @@ namespace MsqLights {
         LineSpotModifier(Engine* e);
         LineSpotModifier(Engine* e, rapidjson::Value& val);
 
+        virtual void SetParam(std::string paramname, float val) override;
         void DrawProps() override;
         void Update() override;
         void Draw() override;

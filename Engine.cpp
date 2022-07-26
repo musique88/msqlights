@@ -103,7 +103,7 @@ namespace MsqLights {
     }
 
     Engine::Engine() 
-    : follow(this), emptyModifiable(this) {
+    : follow(this), emptyModifiable(this), oscServer(this) {
         selectedModifiable = &emptyModifiable;
         activeProp = nullptr;
         debug = false;
@@ -264,6 +264,7 @@ namespace MsqLights {
         for (unsigned int i = 0; i < DMX_ADDRESSES; i++) 
             dmxValues[i] = 0;
         dmxClient.Setup();
+        oscServer.Start();
         SendDmx();
     
         DeselectModifiable();
@@ -312,6 +313,7 @@ namespace MsqLights {
         for(unsigned int i = 0; i < fixtures.size(); i++)
             fixtures[i]->WriteDmx();
         SendDmx();
+        oscServer.Update();
     }
 
     void Engine::Draw() {
@@ -343,7 +345,7 @@ namespace MsqLights {
         }
     }
     void Engine::Close() {
-
+        oscServer.Close();
     }
 
     void Engine::Loop() {
@@ -354,5 +356,6 @@ namespace MsqLights {
             Draw();
             EndDrawing();
         }
+        Close();
     }
 }
