@@ -87,7 +87,6 @@ namespace MsqLights {
                 if (tosc_isBundle(buffer_)) {
                     tosc_bundle bundle;
                     tosc_parseBundle(&bundle, buffer_, len);
-                    const uint64_t timetag = tosc_getTimetag(&bundle);
                     while (tosc_getNextMessage(&bundle, &osc)) {
                         tosc_message printable = osc;
                         tosc_printMessage(&printable);

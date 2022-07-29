@@ -28,7 +28,6 @@ namespace MsqLights {
             rg = 0;
 
         int average = ((int)rgb[0] + (int)rgb[1]) / 2;
-        int threshold = 100 * ((float)average / 255);
         int a = 0;
         a = average - rg;
         if (a < 0) a = 0;
@@ -51,7 +50,6 @@ namespace MsqLights {
         int gb = std::abs(c.g - c.b);
 
         int average = ((int)rgba[0] + (int)rgba[1] + (int)rgba[2]) / 3;
-        int threshold = 100 * ((float)average / 255);
         int w = 0;
         w = average - std::max({rg, gb});
         if (w < 0) w = 0;
@@ -224,5 +222,8 @@ namespace MsqLights {
             break;
         }
     }
-   
+
+    Fixture::~Fixture() {
+
+    }
 }

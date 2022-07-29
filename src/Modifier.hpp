@@ -12,19 +12,26 @@ namespace MsqLights {
     class Modifier : public Modifiable, public Drawable, public Serializable {
     protected:
         int blendModeGui_ = 0;
+        Color tempColor_ = {0,0,0,255};
+        float fadeTimer_ = 0;
+        Color nextColor_ = {0,0,0,255};
+        Color oldColor_ = {0,0,0,255};
     public:
         enum class Blend {
             Addition,
             Subtract
         };
         Blend blendMode_;
+        float fade_;
         Color color_;
         std::vector<Fixture*> affectedFixtures_;
         std::string name_;
         std::string type_;
+        bool enabled_;
 
         Modifier(Engine* engine);
         Modifier(Engine* engine, rapidjson::Value& val);
+        ~Modifier();
 
         virtual void SetParam(std::string paramname, float val);
 

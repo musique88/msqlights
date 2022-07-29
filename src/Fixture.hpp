@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <array>
-#include "raygui.h"
+#include <raygui.h>
 #include "Interfaces.hpp"
 #include "Color.hpp"
 
@@ -36,6 +36,7 @@ namespace MsqLights {
         Fixture(const Fixture& f);
         Fixture(Engine* e, rapidjson::Value& val);
         Fixture(Engine* e, Vector2 position, Vector2 lookingAt, std::string name, unsigned int addr, Mode mode);
+        ~Fixture();
 
         void Blend(Modifier* m);
         void Draw() override;

@@ -171,7 +171,6 @@ namespace MsqLights {
         }
         activeProp = nullptr;
         DeselectModifiable();
-        unsigned int i = 0;
         for(unsigned int i = 0; i < fixtures.size(); i++) {
             if(CheckCollisionPointCircle(GetMousePosition(), fixtures[i]->position_, 10)) {
                 selectedModifiable = fixtures[i];
@@ -286,7 +285,7 @@ namespace MsqLights {
 
         if (follow.enabled_)
             for(unsigned int i = 0; i < follow.affectedFixtures_.size(); i++)
-                fixtures[i]->Blend(&follow);
+                follow.affectedFixtures_[i]->Blend(&follow);
  
         for(unsigned int i = 0; i < GetModifiers()->size(); i++) {
             for(unsigned int j = 0; j < GetModifiers()->at(i)->affectedFixtures_.size(); j++) {

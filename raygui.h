@@ -2033,8 +2033,6 @@ bool GuiTextBox(Rectangle bounds, char *text, int textSize, bool editMode)
             // Only allow keys in range [32..125]
             if ((keyCount + byteSize) < textSize)
             {
-                float maxWidth = (bounds.width - (GuiGetStyle(TEXTBOX, TEXT_INNER_PADDING)*2));
-
                 if (key >= 32)
                 {
                     for (int i = 0; i < byteSize; i++)
@@ -2321,7 +2319,6 @@ bool GuiTextBoxMulti(Rectangle bounds, char *text, int textSize, bool editMode)
             int codepoint = GetCharPressed();
             int textLength = (int)strlen(text);     // Length in bytes (UTF-8 string)
             int byteSize = 0;
-            const char *textUTF8 = CodepointToUTF8(codepoint, &byteSize);
 
             // Introduce characters
             if ((textLength + byteSize) < textSize)

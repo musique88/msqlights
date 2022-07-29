@@ -1,6 +1,6 @@
 #pragma once
 #include <raylib.h>
-#include "raygui.h"
+#include <raygui.h>
 #include "Interfaces.hpp"
 #include <ola/DmxBuffer.h>
 #include <ola/client/StreamingClient.h>

@@ -72,6 +72,8 @@ namespace MsqLights {
     SpotModifier::SpotModifier(Engine* e)
     : Modifier(e) {
         type_ = "Spot";
+        innerRadius_ = 0;
+        outerRadius_ = 0;
     }
 
     void SpotModifier::DrawProps() {

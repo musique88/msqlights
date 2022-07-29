@@ -58,6 +58,7 @@ namespace MsqLights {
         blendMode_ = Blend::Addition;
         color_ = {0,0,0,255};
         type_ = "None";
+        fade_ = 0;
     }
 
     void Modifier::DrawProps() {
@@ -69,14 +70,32 @@ namespace MsqLights {
             else
                 engine_->activeProp = &blendMode_;
         }
-
-        color_ = GuiColorPicker((Rectangle){WIDTH - PANELSIZE + 20, 500, 370, 100}, "Color", color_);
-        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE, 500, 20, 100}, color_);
+        fade_ = GuiSlider((Rectangle){WIDTH - PANELSIZE + 80, 480, PANELSIZE - 80, 20}, 
+            TextFormat("Fade %2.3f", fade_), "", fade_, 0, 10 
+        );
+        tempColor_ = GuiColorPicker((Rectangle){WIDTH - PANELSIZE + 20, 500, 370, 100}, "Color", tempColor_);
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE, 500, 20, 40}, color_);
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE, 540, 20, 20}, nextColor_);
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE, 560, 20, 20}, tempColor_);
+        if (GuiButton((Rectangle) {WIDTH - PANELSIZE, 580, 20, 20}, "GO")) {
+            oldColor_ = color_;
+            nextColor_ = tempColor_;
+            fadeTimer_ = 0;
+        }
         engine_->DisplaySelectedFixtures(&affectedFixtures_, (Vector2){WIDTH - PANELSIZE, 600});
     }
 
     void Modifier::Update() {
-
+        fadeTimer_ += GetFrameTime();
+        if (fade_ == 0) {
+            color_ = nextColor_;
+            return;
+        }
+        if (fadeTimer_ / fade_ > 1) {
+            color_ = nextColor_;
+            return;
+        }
+        color_ = ColorFade(nextColor_, oldColor_, fadeTimer_ / fade_);
     }
 
     void Modifier::Draw() {
@@ -85,5 +104,9 @@ namespace MsqLights {
 
     Rectangle Modifier::GetSelector() {
         return (Rectangle) {0, 0, 0, 0};
+    }
+
+    Modifier::~Modifier() {
+
     }
 }

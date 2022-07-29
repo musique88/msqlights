@@ -11,6 +11,12 @@ namespace MsqLights {
     void Follow::DrawProps() {
         color_ = GuiColorPicker((Rectangle){WIDTH - PANELSIZE + 20, 10 * 20, 370, 100}, "Color", color_);
         DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE, 10 * 20, 20, 100}, color_);
+
+        tempColor_ = GuiColorPicker((Rectangle){WIDTH - PANELSIZE + 20, 370, 370, 100}, "Color", tempColor_);
+        DrawRectangleRec((Rectangle) {WIDTH - PANELSIZE, 370, 20, 80}, color_);
+        if (GuiButton((Rectangle) {WIDTH - PANELSIZE, 450, 20, 20}, "GO"))
+            color_ = tempColor_;
+        
         engine_->DisplaySelectedFixtures(&affectedFixtures_, (Vector2) {WIDTH - PANELSIZE, 15 * 20});
         engine_->DisplayValue(&innerRadius_, "innerRadius", (Vector2) {WIDTH - PANELSIZE, 5 * 20}, 0, 1080);
         engine_->DisplayValue(&outerRadius_, "outerRadius", (Vector2) {WIDTH - PANELSIZE, 7 * 20}, 0, 1080);
