@@ -16,6 +16,7 @@ namespace MsqLights {
         float fadeTimer_ = 0;
         Color nextColor_ = {0,0,0,255};
         Color oldColor_ = {0,0,0,255};
+        bool fadeDone_ = true;
     public:
         enum class Blend {
             Addition,
@@ -27,7 +28,6 @@ namespace MsqLights {
         std::vector<Fixture*> affectedFixtures_;
         std::string name_;
         std::string type_;
-        bool enabled_;
 
         Modifier(Engine* engine);
         Modifier(Engine* engine, rapidjson::Value& val);

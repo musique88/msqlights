@@ -81,17 +81,21 @@ namespace MsqLights {
             oldColor_ = color_;
             nextColor_ = tempColor_;
             fadeTimer_ = 0;
+            fadeDone_ = false;
         }
         engine_->DisplaySelectedFixtures(&affectedFixtures_, (Vector2){WIDTH - PANELSIZE, 600});
     }
 
     void Modifier::Update() {
         fadeTimer_ += GetFrameTime();
+        if (fadeDone_)
+            return;
         if (fade_ == 0) {
             color_ = nextColor_;
             return;
         }
         if (fadeTimer_ / fade_ > 1) {
+            fadeDone_ = true;
             color_ = nextColor_;
             return;
         }

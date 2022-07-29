@@ -313,6 +313,7 @@ namespace MsqLights {
             fixtures[i]->WriteDmx();
         SendDmx();
         oscServer.Update();
+        follow.Update();
     }
 
     void Engine::Draw() {
