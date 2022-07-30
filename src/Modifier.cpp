@@ -5,14 +5,9 @@
 namespace MsqLights {
 
     void Modifier::SetParam(std::string paramname, float val) {
-        if(paramname == "color.r")
-            color_.r = val;
-        else if(paramname == "color.g")
-            color_.g = val;
-        else if(paramname == "color.b")
-            color_.b = val;
-        else if(paramname == "blendmode")
-            blendMode_ = (Blend)(int)val;
+        if(!params.count(paramname))
+            return;
+        params[paramname].setVal(val);
     }
 
     rapidjson::Value Modifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
@@ -112,5 +107,17 @@ namespace MsqLights {
 
     Modifier::~Modifier() {
 
+    }
+
+    void Modifier::RegisterParams() {
+        params.emplace("blendMode", (unsigned char*)(&blendMode_));
+        params.emplace("color.r", &color_.r);
+        params.emplace("color.g", &color_.g);
+        params.emplace("color.b", &color_.b);
+        params.emplace("fade", &fade_);
+    }
+
+    void Modifier::Init() {
+        RegisterParams();
     }
 }

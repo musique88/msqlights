@@ -5,6 +5,8 @@
 #include <raylib.h>
 #include "Fixture.hpp"
 #include <string>
+#include "Parameter.hpp"
+#include <unordered_map>
 
 namespace MsqLights {
     class Engine;
@@ -29,6 +31,8 @@ namespace MsqLights {
         std::string name_;
         std::string type_;
 
+        std::unordered_map<std::string, Parameter> params;
+
         Modifier(Engine* engine);
         Modifier(Engine* engine, rapidjson::Value& val);
         ~Modifier();
@@ -42,5 +46,7 @@ namespace MsqLights {
         virtual Rectangle GetSelector();
         virtual void SetPosition(Vector2 p) = 0;
         virtual void Update();
+        virtual void RegisterParams();
+        void Init();
     };
 }

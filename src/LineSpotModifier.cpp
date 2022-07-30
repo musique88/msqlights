@@ -3,27 +3,6 @@
 #include "JsonHelper.hpp"
 
 namespace MsqLights {
-
-    void LineSpotModifier::SetParam(std::string paramname, float val) {
-        Modifier::SetParam(paramname, val);
-        if(paramname == "pos.x")
-            origin_.x = val;
-        else if(paramname == "pos.y")
-            origin_.y = val;
-        else if(paramname == "innerRadius")
-            innerRadius_ = val;
-        else if(paramname == "outerRadius")
-            outerRadius_ = val;
-        else if(paramname == "speed")
-            speed_ = val;
-        else if(paramname == "phase")
-            phase_ = val;
-        else if(paramname == "destination.x")
-            destination_.x = val;
-        else if(paramname == "destination.y")
-            destination_.y = val;
-    }
-
     LineSpotModifier::LineSpotModifier(Engine* e, rapidjson::Value& val)
     : SpotModifier(e, val) {
         origin_ = Vector2Parse(val["origin"]);
@@ -86,6 +65,7 @@ namespace MsqLights {
         position_.y = origin_.y + ((destination_.y - origin_.y) * phase);
         currentPhase_ += speed_ * GetFrameTime();
         currentPhase_ = currentPhase_ - (int)currentPhase_;
+        Modifier::Update();
     }
 
     void LineSpotModifier::Draw() {
@@ -103,5 +83,15 @@ namespace MsqLights {
 
     float LineSpotModifier::AmountWithLine(Vector2 a, Vector2 b) {
         return SpotModifier::AmountWithLine(a, b);
+    }
+
+    void LineSpotModifier::RegisterParams() {
+        SpotModifier::RegisterParams();
+        params.insert({"pos.x", Parameter(&origin_.x)});
+        params.insert({"pos.y", Parameter(&position_.y)});
+        params.emplace("destination.x", &destination_.x);
+        params.emplace("destination.y", &destination_.y);
+        params.emplace("phase", &phase_);
+        params.emplace("speed", &speed_);
     }
 }

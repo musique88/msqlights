@@ -27,24 +27,28 @@ namespace MsqLights {
             engine_->GetModifiers()->push_back(r);
             r->name_ = "Rectangle";
             engine_->selectedModifiable = r;
+            r->Init();
         }
         if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 160, 20, 80, 20}, "Spot")){
             SpotModifier* s = new SpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "Spot";
             engine_->selectedModifiable = s;
+            s->Init();
         }
         if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 240, 20, 80, 20}, "CSpot")){
             SpotModifier* s = new CircleSpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "CSpot";
             engine_->selectedModifiable = s;
+            s->Init();
         }
         if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 320, 20, 80, 20}, "LSpot")){
             SpotModifier* s = new LineSpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "LSpot";
             engine_->selectedModifiable = s;
+            s->Init();
         }
         
         
