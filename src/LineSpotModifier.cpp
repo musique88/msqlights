@@ -3,14 +3,6 @@
 #include "JsonHelper.hpp"
 
 namespace MsqLights {
-    LineSpotModifier::LineSpotModifier(Engine* e, rapidjson::Value& val)
-    : SpotModifier(e, val) {
-        origin_ = Vector2Parse(val["origin"]);
-        destination_ = Vector2Parse(val["destination"]);
-        speed_ = val["speed"].GetFloat();
-        phase_ = val["phase"].GetFloat();
-    }
-
     LineSpotModifier::LineSpotModifier(Engine* e) 
     : SpotModifier(e) {
         type_ = "LineSpot";
@@ -20,18 +12,6 @@ namespace MsqLights {
         phase_ = 0.f;
         currentPhase_ = 0.f;
     }
-
-    rapidjson::Value LineSpotModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
-        rapidjson::Value val;
-        val = SpotModifier::Serialize(allocator);
-        val["type"] = "LineSpot";
-        val.AddMember("origin", MsqLights::Serialize(origin_, allocator), allocator);
-        val.AddMember("destination", MsqLights::Serialize(destination_, allocator), allocator);
-        val.AddMember("speed", speed_, allocator);
-        val.AddMember("phase", phase_, allocator);
-        return val;
-    } 
-
 
     void LineSpotModifier::DrawProps() {
         engine_->DisplayValue(&origin_.x, "pos.x", (Vector2) {WIDTH - PANELSIZE, 80}, 0, 1500);

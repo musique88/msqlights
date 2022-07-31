@@ -8,25 +8,6 @@ namespace MsqLights {
         return sqrt(v.x * v.x + v.y * v.y);
     }
 
-    rapidjson::Value CircleSpotModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
-        rapidjson::Value val;
-        val = SpotModifier::Serialize(allocator);
-        val["type"] = "CircleSpot";
-        val.AddMember("origin", MsqLights::Serialize(origin_, allocator), allocator);
-        val.AddMember("size", MsqLights::Serialize(size_, allocator), allocator);
-        val.AddMember("speed", speed_, allocator);
-        val.AddMember("phase", phase_, allocator);
-        return val;
-    } 
-
-    CircleSpotModifier::CircleSpotModifier(Engine* e, rapidjson::Value& val) 
-    : SpotModifier(e, val) {
-        origin_ = Vector2Parse(val["origin"]);
-        size_ = Vector2Parse(val["size"]);
-        speed_ = val["speed"].GetFloat();
-        phase_ = val["phase"].GetFloat();
-    }
-
     CircleSpotModifier::CircleSpotModifier(Engine* e) 
     : SpotModifier(e) {
         type_ = "CircleSpot";

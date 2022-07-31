@@ -19,6 +19,10 @@ namespace MsqLights {
         setPtr(ptr);
     }
 
+    Parameter::Parameter(std::string* ptr) {
+        setPtr(ptr);
+    }
+
     void Parameter::setPtr(float* ptr) {
         type_ = Type::FLOAT;
         ptr_ = (void*)ptr;
@@ -39,6 +43,11 @@ namespace MsqLights {
         ptr_ = (void*)ptr;
     }
 
+    void Parameter::setPtr(std::string* ptr) {
+        type_ = Type::STRING;
+        ptr_ = (void*)ptr;
+    }
+
     void Parameter::setVal(float val) {
         switch (type_) {
             case Type::FLOAT:
@@ -52,6 +61,8 @@ namespace MsqLights {
                 break;
             case Type::UCHAR:
                 *getUCharPtr() = val;
+                break;
+            default:
                 break;
         }
     }
@@ -70,6 +81,8 @@ namespace MsqLights {
             case Type::UCHAR:
                 *getUCharPtr() = val;
                 break;
+            default:
+                break;
         }
     }
 
@@ -86,6 +99,8 @@ namespace MsqLights {
                 break;
             case Type::UCHAR:
                 *getUCharPtr() = val;
+                break;
+            default:
                 break;
         }
     }
@@ -104,7 +119,15 @@ namespace MsqLights {
             case Type::UCHAR:
                 *getUCharPtr() = val;
                 break;
+            default:
+                break;
         }
+    }
+
+    void Parameter::setVal(std::string val) {
+        if (type_ != Type::STRING)
+            return;
+        getStringPtr()->assign(val); 
     }
 
     float Parameter::getFloat() {
@@ -117,7 +140,8 @@ namespace MsqLights {
                 return *getUIntPtr();
             case Type::UCHAR:
                 return *getUIntPtr();
-        
+            default:
+                break;
         }
     }
 
@@ -131,6 +155,8 @@ namespace MsqLights {
                 return *getUIntPtr();
             case Type::UCHAR:
                 return *getUIntPtr();
+            default:
+                break;
         }
     }
 
@@ -144,6 +170,9 @@ namespace MsqLights {
                 return *getUIntPtr();
             case Type::UCHAR:
                 return *getUIntPtr();
+            default:
+                break;
+     
         }
     }
 
@@ -157,7 +186,16 @@ namespace MsqLights {
                 return *getUIntPtr();
             case Type::UCHAR:
                 return *getUIntPtr();
+            default:
+                break;
         }
+    }
+
+    std::string Parameter::getString() {
+        // i dont like this
+        if (type_ != Type::STRING)
+            return "";
+        return *(std::string*)ptr_;
     }
 
     float* Parameter::getFloatPtr() {
@@ -174,5 +212,12 @@ namespace MsqLights {
 
     unsigned char* Parameter::getUCharPtr() {
         return (unsigned char*) ptr_;
+    }
+
+    std::string* Parameter::getStringPtr() {
+        // i dont like this
+        if (type_ != Type::STRING)
+            return nullptr; 
+        return (std::string*)ptr_;
     }
 }

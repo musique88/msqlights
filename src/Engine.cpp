@@ -250,17 +250,20 @@ namespace MsqLights {
                 auto mod = page[j].GetObject();
                 const char* typeStr = mod["type"].GetString();
 
+                Modifier* modif;
                 if(!strcmp(typeStr, "Rectangle"))
-                    GetModifiers()->push_back(new RectangleModifier(this, page[j]));
+                    modif = new RectangleModifier(this);
                 else if(!strcmp(typeStr, "Spot"))
-                    GetModifiers()->push_back(new SpotModifier(this, page[j]));
+                    modif = new SpotModifier(this);
                 else if(!strcmp(typeStr, "CircleSpot"))
-                    GetModifiers()->push_back(new CircleSpotModifier(this, page[j]));
+                    modif = new CircleSpotModifier(this);
                 else if(!strcmp(typeStr, "LineSpot"))
-                    GetModifiers()->push_back(new LineSpotModifier(this, page[j]));
+                    modif = new LineSpotModifier(this);
+                modif->Init();
+                modif->operator=(page[j]);
+                modifiers->push_back(modif);
             }
         }
-
     }
 
     void Engine::Init() {

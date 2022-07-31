@@ -6,7 +6,7 @@
 #include "Fixture.hpp"
 #include <string>
 #include "Parameter.hpp"
-#include <unordered_map>
+#include <map>
 
 namespace MsqLights {
     class Engine;
@@ -31,11 +31,12 @@ namespace MsqLights {
         std::string name_;
         std::string type_;
 
-        std::unordered_map<std::string, Parameter> params;
+        std::map<std::string, Parameter> params;
 
         Modifier(Engine* engine);
-        Modifier(Engine* engine, rapidjson::Value& val);
         ~Modifier();
+
+        void operator=(rapidjson::Value& val);
 
         virtual void SetParam(std::string paramname, float val);
 

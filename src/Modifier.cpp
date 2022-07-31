@@ -13,11 +13,32 @@ namespace MsqLights {
     rapidjson::Value Modifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
         rapidjson::Value val;
         val.SetObject();
-        rapidjson::Value name;
-        name.SetString(name_.c_str(), allocator);
-        val.AddMember("name", name, allocator);
-        val.AddMember("blendMode", (int)blendMode_, allocator);
-        val.AddMember("color", MsqLights::Serialize(color_, allocator), allocator);
+
+        for (auto p : params){
+            rapidjson::Value paramName;
+            paramName.SetString(p.first.c_str(), allocator);
+            rapidjson::Value value;
+
+            switch(p.second.type_) {
+                case Parameter::Type::FLOAT:
+                    value.SetFloat(p.second.getFloat());
+                    break;
+                case Parameter::Type::INT:
+                    value.SetInt(p.second.getInt());
+                    break;
+                case Parameter::Type::UINT:
+                    value.SetUint(p.second.getUInt());
+                    break;
+                case Parameter::Type::UCHAR:
+                    value.SetUint(p.second.getUChar());
+                    break;
+                case Parameter::Type::STRING:
+                    value.SetString(p.second.getString().c_str(), allocator);
+                    break;
+            }
+            val.AddMember(paramName, value, allocator);
+        }
+
         rapidjson::Value affectedFixturesArray;
         affectedFixturesArray.SetArray();
         for(unsigned int i = 0; i < affectedFixtures_.size(); i++) {
@@ -37,12 +58,26 @@ namespace MsqLights {
         return val;
     } 
 
-
-    Modifier::Modifier(Engine* engine, rapidjson::Value& val) 
-    : Modifiable(engine) {
-        name_ = val["name"].GetString();
-        blendMode_ = (Blend)val["blendMode"].GetInt();
-        color_ = ColorParse(val["color"]);
+    void Modifier::operator=(rapidjson::Value& val) {
+        for (auto p : params){
+            switch(p.second.type_) {
+                case Parameter::Type::FLOAT:
+                    p.second.setVal(val[p.first.c_str()].GetFloat());
+                    break;
+                case Parameter::Type::INT:
+                    p.second.setVal(val[p.first.c_str()].GetInt());
+                    break;
+                case Parameter::Type::UINT:
+                    p.second.setVal(val[p.first.c_str()].GetUint());
+                    break;
+                case Parameter::Type::UCHAR:
+                    p.second.setVal(val[p.first.c_str()].GetUint());
+                    break;
+                case Parameter::Type::STRING:
+                    p.second.setVal(val[p.first.c_str()].GetString());
+                    break;
+            }
+        }
         auto affectedFixturesArr = val["affectedFixtures"].GetArray();
         for(unsigned int i = 0; i < affectedFixturesArr.Size(); i++)
             affectedFixtures_.push_back(engine_->fixtures[affectedFixturesArr[i].GetInt()]);
@@ -115,6 +150,8 @@ namespace MsqLights {
         params.emplace("color.g", &color_.g);
         params.emplace("color.b", &color_.b);
         params.emplace("fade", &fade_);
+        params.emplace("name", &name_);
+        params.emplace("type", &type_);
     }
 
     void Modifier::Init() {

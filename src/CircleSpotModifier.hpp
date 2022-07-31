@@ -10,9 +10,7 @@ namespace MsqLights {
         float currentPhase_;
 
         CircleSpotModifier(Engine* e);
-        CircleSpotModifier(Engine* e, rapidjson::Value& val);
 
-        rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
         void DrawProps() override;
         void Update() override;
         void Draw() override;

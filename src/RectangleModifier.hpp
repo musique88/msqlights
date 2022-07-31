@@ -15,7 +15,6 @@ namespace MsqLights {
         Rectangle GetSelector() override;
         float AmountWithLine(Vector2 a, Vector2 b) override;
         void SetPosition(Vector2 p) override;  
-        rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
 
         virtual void RegisterParams() override;
     };

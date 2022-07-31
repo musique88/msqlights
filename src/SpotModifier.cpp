@@ -39,24 +39,6 @@ namespace MsqLights {
         return sqrt(dx * dx + dy * dy);
     }
 
-
-    rapidjson::Value SpotModifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
-        rapidjson::Value val;
-        val = Modifier::Serialize(allocator);
-        val.AddMember("type", "Spot", allocator);
-        val.AddMember("position", MsqLights::Serialize(position_, allocator), allocator);
-        val.AddMember("innerRadius", innerRadius_, allocator);
-        val.AddMember("outerRadius", outerRadius_, allocator);
-        return val;
-    } 
-
-    SpotModifier::SpotModifier(Engine* e, rapidjson::Value& val) 
-    : Modifier(e, val){
-        position_ = Vector2Parse(val["position"]);
-        innerRadius_ = val["innerRadius"].GetFloat();
-        outerRadius_ = val["outerRadius"].GetFloat();
-    }
-
     SpotModifier::SpotModifier(Engine* e)
     : Modifier(e) {
         type_ = "Spot";
