@@ -8,11 +8,12 @@
 #include <raygui.h>
 #include "Interfaces.hpp"
 #include "Color.hpp"
+#include "Modifiable.hpp"
 
 namespace MsqLights {
     class Modifier;
 
-    class Fixture : public Modifiable, public Serializable, public Drawable {
+    class Fixture : public Modifiable, public Drawable {
     public: 
         enum class Mode {
             Dimmer, 

@@ -8,11 +8,12 @@
                 "color.g": 0,
                 "color.r": 0,
                 "fade": 0.0,
+                "id": 1896753446,
                 "name": "Rectangle",
-                "rect.h": 195.0,
-                "rect.w": 657.0,
-                "rect.x": 557.0,
-                "rect.y": 424.0,
+                "rect.h": 0.0,
+                "rect.w": 0.0,
+                "rect.x": 0.0,
+                "rect.y": 0.0,
                 "type": "Rectangle",
                 "affectedFixtures": []
             }

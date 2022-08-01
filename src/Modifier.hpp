@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interfaces.hpp"
+#include "Modifiable.hpp"
 #include <vector>
 #include <raylib.h>
 #include "Fixture.hpp"
@@ -11,7 +12,7 @@
 namespace MsqLights {
     class Engine;
 
-    class Modifier : public Modifiable, public Drawable, public Serializable {
+    class Modifier : public Modifiable, public Drawable {
     protected:
         int blendModeGui_ = 0;
         Color tempColor_ = {0,0,0,255};
@@ -31,14 +32,10 @@ namespace MsqLights {
         std::string name_;
         std::string type_;
 
-        std::map<std::string, Parameter> params;
-
         Modifier(Engine* engine);
         ~Modifier();
 
-        void operator=(rapidjson::Value& val);
-
-        virtual void SetParam(std::string paramname, float val);
+        virtual void SetParameter(std::string paramname, float val);
 
         rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
         void DrawProps() override;
@@ -47,7 +44,7 @@ namespace MsqLights {
         virtual Rectangle GetSelector();
         virtual void SetPosition(Vector2 p) = 0;
         virtual void Update();
-        virtual void RegisterParams();
-        void Init();
+        virtual void RegisterParameters() override;
+        virtual void Load(rapidjson::Value& val) override;
     };
 }

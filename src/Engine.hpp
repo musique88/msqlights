@@ -10,6 +10,7 @@
 #include "SpotModifier.hpp"
 #include "Follow.hpp"
 #include "OscServer.hpp"
+#include <random>
 
 #define WIDTH 1366
 #define HEIGHT 768 
@@ -43,6 +44,7 @@ namespace MsqLights {
         ola::DmxBuffer dmxBuffer;
         ola::client::StreamingClient dmxClient;
         OscServer oscServer;
+        std::default_random_engine random;
 
         Engine();
         

@@ -4,40 +4,14 @@
 
 namespace MsqLights {
 
-    void Modifier::SetParam(std::string paramname, float val) {
-        if(!params.count(paramname))
+    void Modifier::SetParameter(std::string paramname, float val) {
+        if(!parameters_.count(paramname))
             return;
-        params[paramname].setVal(val);
+        parameters_[paramname].setVal(val);
     }
 
     rapidjson::Value Modifier::Serialize(rapidjson::Document::AllocatorType& allocator) {
-        rapidjson::Value val;
-        val.SetObject();
-
-        for (auto p : params){
-            rapidjson::Value paramName;
-            paramName.SetString(p.first.c_str(), allocator);
-            rapidjson::Value value;
-
-            switch(p.second.type_) {
-                case Parameter::Type::FLOAT:
-                    value.SetFloat(p.second.getFloat());
-                    break;
-                case Parameter::Type::INT:
-                    value.SetInt(p.second.getInt());
-                    break;
-                case Parameter::Type::UINT:
-                    value.SetUint(p.second.getUInt());
-                    break;
-                case Parameter::Type::UCHAR:
-                    value.SetUint(p.second.getUChar());
-                    break;
-                case Parameter::Type::STRING:
-                    value.SetString(p.second.getString().c_str(), allocator);
-                    break;
-            }
-            val.AddMember(paramName, value, allocator);
-        }
+        rapidjson::Value val = Modifiable::Serialize(allocator);
 
         rapidjson::Value affectedFixturesArray;
         affectedFixturesArray.SetArray();
@@ -57,31 +31,6 @@ namespace MsqLights {
         val.AddMember("affectedFixtures", affectedFixturesArray, allocator);
         return val;
     } 
-
-    void Modifier::operator=(rapidjson::Value& val) {
-        for (auto p : params){
-            switch(p.second.type_) {
-                case Parameter::Type::FLOAT:
-                    p.second.setVal(val[p.first.c_str()].GetFloat());
-                    break;
-                case Parameter::Type::INT:
-                    p.second.setVal(val[p.first.c_str()].GetInt());
-                    break;
-                case Parameter::Type::UINT:
-                    p.second.setVal(val[p.first.c_str()].GetUint());
-                    break;
-                case Parameter::Type::UCHAR:
-                    p.second.setVal(val[p.first.c_str()].GetUint());
-                    break;
-                case Parameter::Type::STRING:
-                    p.second.setVal(val[p.first.c_str()].GetString());
-                    break;
-            }
-        }
-        auto affectedFixturesArr = val["affectedFixtures"].GetArray();
-        for(unsigned int i = 0; i < affectedFixturesArr.Size(); i++)
-            affectedFixtures_.push_back(engine_->fixtures[affectedFixturesArr[i].GetInt()]);
-    }
 
     Modifier::Modifier(Engine* engine) 
     : Modifiable(engine) {
@@ -114,6 +63,7 @@ namespace MsqLights {
             fadeDone_ = false;
         }
         engine_->DisplaySelectedFixtures(&affectedFixtures_, (Vector2){WIDTH - PANELSIZE, 600});
+        Modifiable::DrawProps();
     }
 
     void Modifier::Update() {
@@ -144,17 +94,24 @@ namespace MsqLights {
 
     }
 
-    void Modifier::RegisterParams() {
-        params.emplace("blendMode", (unsigned char*)(&blendMode_));
-        params.emplace("color.r", &color_.r);
-        params.emplace("color.g", &color_.g);
-        params.emplace("color.b", &color_.b);
-        params.emplace("fade", &fade_);
-        params.emplace("name", &name_);
-        params.emplace("type", &type_);
+    void Modifier::RegisterParameters() {
+        Modifiable::RegisterParameters();
+        parameters_.emplace("blendMode", (unsigned char*)(&blendMode_));
+        parameters_.emplace("color.r", &color_.r);
+        parameters_.emplace("color.g", &color_.g);
+        parameters_.emplace("color.b", &color_.b);
+        parameters_.emplace("fade", &fade_);
+        parameters_.emplace("name", &name_);
+        parameters_.emplace(std::make_pair(
+            std::string("type"), Parameter(&type_, true)
+        ));
     }
 
-    void Modifier::Init() {
-        RegisterParams();
+    void Modifier::Load(rapidjson::Value& val) {
+        Modifiable::Load(val);
+
+        auto affectedFixturesArr = val["affectedFixtures"].GetArray();
+        for(unsigned int i = 0; i < affectedFixturesArr.Size(); i++)
+            affectedFixtures_.push_back(engine_->fixtures[affectedFixturesArr[i].GetInt()]);
     }
 }

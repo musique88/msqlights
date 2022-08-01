@@ -3,25 +3,42 @@
 namespace MsqLights {
     Parameter::Parameter() {
     }
-    Parameter::Parameter(float* ptr) {
+    Parameter::Parameter(float* ptr, bool readOnly) {
+        readOnly_ = readOnly;
         setPtr(ptr);
     }
 
-    Parameter::Parameter(int* ptr) {
+    Parameter::Parameter(int* ptr, bool readOnly) {
+        readOnly_ = readOnly;
         setPtr(ptr);
     }
 
-    Parameter::Parameter(unsigned int* ptr) {
+    Parameter::Parameter(unsigned int* ptr, bool readOnly) {
+        readOnly_ = readOnly;
         setPtr(ptr);
     }
 
-    Parameter::Parameter(unsigned char* ptr) {
+    Parameter::Parameter(unsigned char* ptr, bool readOnly) {
+        readOnly_ = readOnly;
         setPtr(ptr);
     }
 
-    Parameter::Parameter(std::string* ptr) {
+    Parameter::Parameter(std::string* ptr, bool readOnly) {
+        readOnly_ = readOnly;
         setPtr(ptr);
     }
+    Parameter::Parameter(float* ptr)
+    :Parameter(ptr, false) {}
+    Parameter::Parameter(int* ptr)
+    :Parameter(ptr, false) {}
+    Parameter::Parameter(unsigned int* ptr)
+    :Parameter(ptr, false) {}
+    Parameter::Parameter(unsigned char* ptr)
+    :Parameter(ptr, false) {}
+    Parameter::Parameter(std::string* ptr)
+    :Parameter(ptr, false) {}
+
+
 
     void Parameter::setPtr(float* ptr) {
         type_ = Type::FLOAT;
@@ -49,6 +66,9 @@ namespace MsqLights {
     }
 
     void Parameter::setVal(float val) {
+        if(readOnly_)
+            return;
+
         switch (type_) {
             case Type::FLOAT:
                 *getFloatPtr() = val;
@@ -68,6 +88,9 @@ namespace MsqLights {
     }
 
     void Parameter::setVal(int val) {
+        if(readOnly_)
+            return;
+
         switch (type_) {
             case Type::FLOAT:
                 *getFloatPtr() = val;
@@ -87,6 +110,9 @@ namespace MsqLights {
     }
 
     void Parameter::setVal(unsigned int val) {
+        if(readOnly_)
+            return;
+
         switch (type_) {
             case Type::FLOAT:
                 *getFloatPtr() = val;
@@ -106,6 +132,9 @@ namespace MsqLights {
     }
 
     void Parameter::setVal(unsigned char val) {
+        if(readOnly_)
+            return;
+
         switch (type_) {
             case Type::FLOAT:
                 *getFloatPtr() = val;
@@ -125,6 +154,8 @@ namespace MsqLights {
     }
 
     void Parameter::setVal(std::string val) {
+        if(readOnly_)
+            return;
         if (type_ != Type::STRING)
             return;
         getStringPtr()->assign(val); 

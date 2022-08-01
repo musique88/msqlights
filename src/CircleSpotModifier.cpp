@@ -64,13 +64,13 @@ namespace MsqLights {
         return SpotModifier::AmountWithLine(a, b);
     }
 
-    void CircleSpotModifier::RegisterParams() {
-        SpotModifier::RegisterParams();
-        params.insert({"pos.x", Parameter(&origin_.x)});
-        params.insert({"pos.y", Parameter(&position_.y)});
-        params.emplace("size.x", &size_.x);
-        params.emplace("size.y", &size_.y);
-        params.emplace("phase", &phase_);
-        params.emplace("speed", &speed_);
+    void CircleSpotModifier::RegisterParameters() {
+        SpotModifier::RegisterParameters();
+        parameters_.insert({"pos.x", Parameter(&origin_.x)});
+        parameters_.insert({"pos.y", Parameter(&position_.y)});
+        parameters_.emplace("size.x", &size_.x);
+        parameters_.emplace("size.y", &size_.y);
+        parameters_.emplace("phase", &phase_);
+        parameters_.emplace("speed", &speed_);
     }
 }

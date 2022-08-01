@@ -10,7 +10,6 @@ namespace MsqLights {
         float currentPhase_;
 
         LineSpotModifier(Engine* e);
-        LineSpotModifier(Engine* e, rapidjson::Value& val);
 
         void DrawProps() override;
         void Update() override;
@@ -18,6 +17,6 @@ namespace MsqLights {
         Rectangle GetSelector() override;
         float AmountWithLine(Vector2 a, Vector2 b) override;
 
-        virtual void RegisterParams() override;
+        virtual void RegisterParameters() override;
     };
 }

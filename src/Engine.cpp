@@ -7,9 +7,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
+
 namespace MsqLights {
     Engine::EmptyModifiable::EmptyModifiable(Engine* engine)
     : Modifiable(engine) {
@@ -107,7 +109,8 @@ namespace MsqLights {
     }
 
     Engine::Engine() 
-    : follow(this), emptyModifiable(this), oscServer(this) {
+    : follow(this), emptyModifiable(this), oscServer(this), 
+    random(std::chrono::system_clock::now().time_since_epoch().count()) {
         selectedModifiable = &emptyModifiable;
         activeProp = nullptr;
         debug = false;
@@ -250,7 +253,7 @@ namespace MsqLights {
                 auto mod = page[j].GetObject();
                 const char* typeStr = mod["type"].GetString();
 
-                Modifier* modif;
+                Modifier* modif = nullptr;
                 if(!strcmp(typeStr, "Rectangle"))
                     modif = new RectangleModifier(this);
                 else if(!strcmp(typeStr, "Spot"))
@@ -260,7 +263,7 @@ namespace MsqLights {
                 else if(!strcmp(typeStr, "LineSpot"))
                     modif = new LineSpotModifier(this);
                 modif->Init();
-                modif->operator=(page[j]);
+                modif->Load(page[j]);
                 modifiers->push_back(modif);
             }
         }

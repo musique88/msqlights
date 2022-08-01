@@ -55,11 +55,11 @@ namespace MsqLights {
         rect_.y = p.y;
     } 
 
-    void RectangleModifier::RegisterParams() {
-        Modifier::RegisterParams();
-        params.emplace("rect.x", &rect_.x);
-        params.emplace("rect.y", &rect_.y);
-        params.emplace("rect.w", &rect_.width);
-        params.emplace("rect.h", &rect_.height);
+    void RectangleModifier::RegisterParameters() {
+        Modifier::RegisterParameters();
+        parameters_.emplace("rect.x", &rect_.x);
+        parameters_.emplace("rect.y", &rect_.y);
+        parameters_.emplace("rect.w", &rect_.width);
+        parameters_.emplace("rect.h", &rect_.height);
     }
 }

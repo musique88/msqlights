@@ -46,10 +46,10 @@ namespace MsqLights {
                 continue;
             switch(tosc_getFormat(&osc)[0]) {
                 case 'f':
-                    mod->SetParam(addr[2], tosc_getNextFloat(&osc));
+                    mod->SetParameter(addr[2], tosc_getNextFloat(&osc));
                     break;
                 case 'i':
-                    mod->SetParam(addr[2], tosc_getNextInt32(&osc));
+                    mod->SetParameter(addr[2], tosc_getNextInt32(&osc));
                     break;
             }
             return;

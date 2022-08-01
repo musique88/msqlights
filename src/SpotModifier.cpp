@@ -79,11 +79,11 @@ namespace MsqLights {
         position_ = p;
     } 
 
-    void SpotModifier::RegisterParams() {
-        Modifier::RegisterParams();
-        params.emplace("pos.x", &position_.x);
-        params.emplace("pos.y", &position_.y);
-        params.emplace("innerRadius", &innerRadius_);
-        params.emplace("outerRadius", &outerRadius_);
+    void SpotModifier::RegisterParameters() {
+        Modifier::RegisterParameters();
+        parameters_.emplace("pos.x", &position_.x);
+        parameters_.emplace("pos.y", &position_.y);
+        parameters_.emplace("innerRadius", &innerRadius_);
+        parameters_.emplace("outerRadius", &outerRadius_);
     }
 }

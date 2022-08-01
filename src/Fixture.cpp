@@ -85,8 +85,7 @@ namespace MsqLights {
     }
 
     rapidjson::Value Fixture::Serialize(rapidjson::Document::AllocatorType& allocator) {
-        rapidjson::Value val;
-        val.SetObject();
+        rapidjson::Value val = Modifiable::Serialize(allocator);
         rapidjson::Value name;
         name.SetString(name_.c_str(), allocator);
         val.AddMember("name", name, allocator);

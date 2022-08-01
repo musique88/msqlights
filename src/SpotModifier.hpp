@@ -17,6 +17,6 @@ namespace MsqLights {
         virtual float AmountWithLine(Vector2 a, Vector2 b) override;
         void SetPosition(Vector2 p) override;
 
-        virtual void RegisterParams() override;
+        virtual void RegisterParameters() override;
     };
 }

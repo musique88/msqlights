@@ -8,7 +8,6 @@ namespace MsqLights {
         Rectangle rect_;
     public:
         RectangleModifier(Engine* e);
-        RectangleModifier(Engine* e, rapidjson::Value& val);
 
         void DrawProps() override;
         void Draw() override;
@@ -16,6 +15,6 @@ namespace MsqLights {
         float AmountWithLine(Vector2 a, Vector2 b) override;
         void SetPosition(Vector2 p) override;  
 
-        virtual void RegisterParams() override;
+        virtual void RegisterParameters() override;
     };
 }

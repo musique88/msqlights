@@ -1,5 +1,5 @@
+#pragma once
 #include <string>
-
 
 namespace MsqLights {
     class Parameter {
@@ -14,8 +14,15 @@ namespace MsqLights {
         };
         Type type_;
         void* ptr_;
+        bool readOnly_;
 
         Parameter();
+        Parameter(float* ptr, bool readOnly);
+        Parameter(int* ptr, bool readOnly);
+        Parameter(unsigned int* ptr, bool readOnly);
+        Parameter(unsigned char* ptr, bool readOnly);
+        Parameter(std::string* ptr, bool readOnly);
+
         Parameter(float* ptr);
         Parameter(int* ptr);
         Parameter(unsigned int* ptr);
