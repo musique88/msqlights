@@ -16,6 +16,15 @@ namespace MsqLights {
         return arr;
     }
 
+    std::array<unsigned char, 4> ResolveRGBI(Color c) {
+        std::array<unsigned char, 4> arr;
+        arr[0] = c.r;
+        arr[1] = c.g;
+        arr[2] = c.b;
+        arr[3] = 255;
+        return arr;
+    }
+
     std::array<unsigned char, 4> ResolveRGBA(Color c) {
         std::array<unsigned char, 4> arr;
         auto rgb = ResolveRGB(c);
@@ -113,6 +122,8 @@ namespace MsqLights {
         addr_ = 0;
         mode_ = Mode::Dimmer;
         name_ = "Fixture";
+        fadeTimer_ = -0.1;
+        timeToFade_ = 1;
     }
 
     Fixture::Fixture(const Fixture& f) 
@@ -138,13 +149,13 @@ namespace MsqLights {
     void Fixture::Blend(Modifier* m) {
         switch (m->blendMode_){
             case (Modifier::Blend::Addition):
-                color_ = color_ + ColorMult(
+                nextColor_ = nextColor_ + ColorMult(
                     m->color_, 
                     m->AmountWithLine(position_, lookingAt_)
                 );
                 return;
             case (Modifier::Blend::Subtract):
-                color_ = color_ - ColorMult(
+                nextColor_ = nextColor_ - ColorMult(
                     m->color_, 
                     m->AmountWithLine(position_, lookingAt_)
                 );
@@ -174,7 +185,7 @@ namespace MsqLights {
         addr_ = val;
 
         int selectedMode = (int)mode_;
-        if (GuiDropdownBox((Rectangle) {WIDTH - PANELSIZE, 260, 300, 20}, "Dimmer;RGB;RGBA;RGBAW", &selectedMode, engine_->activeProp == &mode_)) {
+        if (GuiDropdownBox((Rectangle) {WIDTH - PANELSIZE, 260, 300, 20}, "Dimmer;RGB;RGBI;RGBA;RGBAW", &selectedMode, engine_->activeProp == &mode_)) {
             mode_ = (Mode)selectedMode;
             if (engine_->activeProp == &mode_)
                 engine_->activeProp = nullptr;
@@ -205,6 +216,13 @@ namespace MsqLights {
             engine_->dmxValues[addr_ + 2] = arr[2];
             break;
 
+        case Mode::RGBI:
+            engine_->dmxValues[addr_] = arr[0];
+            engine_->dmxValues[addr_ + 1] = arr[1];
+            engine_->dmxValues[addr_ + 2] = arr[2];
+            engine_->dmxValues[addr_ + 3] = 255;
+            break;
+
         case Mode::RGBA:
             engine_->dmxValues[addr_] = arr[0];
             engine_->dmxValues[addr_ + 1] = arr[1];
@@ -220,6 +238,25 @@ namespace MsqLights {
             engine_->dmxValues[addr_ + 4] = arr[4];
             break;
         }
+    }
+
+    void Fixture::Update() {
+        color_ = nextColor_;
+        nextColor_ = BLACK;
+        if(fadeTimer_ <= 0)
+            return;
+        
+        color_ = (
+            ColorInt(oldColor_) * (fadeTimer_ / timeToFade_) + 
+            (color_) * (1 - (fadeTimer_ / timeToFade_)));
+
+        fadeTimer_ -= GetFrameTime();
+    }
+
+    void Fixture::BlendTo(float secs) {
+        oldColor_ = color_.getColor();
+        fadeTimer_ = secs;
+        timeToFade_ = secs;
     }
 
     Fixture::~Fixture() {

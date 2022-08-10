@@ -99,10 +99,15 @@ namespace MsqLights {
             else
                 engine_->activeProp = &selectedFixture_;
         }
-
+        fade_ = GuiSlider((Rectangle){WIDTH - PANELSIZE + 80, HEIGHT - 60, PANELSIZE - 80, 20}, 
+            TextFormat("Fade %2.3f", fade_), "", fade_, 0, 10 
+        );
         for(unsigned int i = 0; i < PAGES; i++) {
-            if (GuiButton((Rectangle) {(float)(WIDTH - PANELSIZE + i * 20), HEIGHT - 40, 20, 20}, TextFormat("%d", i)))
+            if (GuiButton((Rectangle) {(float)(WIDTH - PANELSIZE + i * 20), HEIGHT - 40, 20, 20}, TextFormat("%d", i))){
                 engine_->selectedPage = i;
+                for (unsigned int i = 0; i < engine_->fixtures.size(); i++)
+                    engine_->fixtures[i]->BlendTo(fade_);
+            }
         }
 
         GuiLabel((Rectangle) {(WIDTH - PANELSIZE) + 320, HEIGHT - 40, 100, 20}, TextFormat("PAGE: %d", engine_->selectedPage));
@@ -291,7 +296,7 @@ namespace MsqLights {
             dmxValues[i] = 0;
  
         for(unsigned int i = 0; i < fixtures.size(); i++)
-            fixtures[i]->color_ = BLACK;
+            fixtures[i]->Update();
 
         if (follow.enabled_)
             for(unsigned int i = 0; i < follow.affectedFixtures_.size(); i++)

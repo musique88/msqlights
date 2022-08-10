@@ -18,12 +18,17 @@ namespace MsqLights {
         enum class Mode {
             Dimmer, 
             RGB,
+            RGBI,
             RGBA,
             RGBAW,
         };
         Vector2 position_;
         Vector2 lookingAt_;
         ColorInt color_;
+        ColorInt nextColor_;
+        Color oldColor_;
+        float fadeTimer_;
+        float timeToFade_;
         unsigned int addr_;
         Mode mode_;
         std::string name_;
@@ -41,6 +46,8 @@ namespace MsqLights {
 
         void Blend(Modifier* m);
         void Draw() override;
+        void Update();
+        void BlendTo(float secs);
         void DrawProps() override;
         void WriteDmx();
     };

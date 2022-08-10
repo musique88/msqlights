@@ -25,6 +25,7 @@ namespace MsqLights {
         class EmptyModifiable : public Modifiable {
             int selectedFixture_;
             int selectedModifier_;
+            float fade_;
         
         public:
             EmptyModifiable(Engine* engine);
