@@ -44,6 +44,8 @@ namespace MsqLights {
         Fixture(Engine* e, Vector2 position, Vector2 lookingAt, std::string name, unsigned int addr, Mode mode);
         ~Fixture();
 
+        void RegisterParameters() override;
+
         void Blend(Modifier* m);
         void Draw() override;
         void Update();

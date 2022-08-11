@@ -2,8 +2,6 @@
 #include <cstring>
 #include "dark.h"
 #include <cstring>
-#include "CircleSpotModifier.hpp"
-#include "LineSpotModifier.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -25,7 +23,7 @@ namespace MsqLights {
             engine_->selectedModifiable = engine_->fixtures[engine_->fixtures.size() - 1];
         }
         if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 80, 20, 80, 20}, "Rectangle")){
-            RectangleModifier* r = new RectangleModifier(engine_);
+            GlobalModifier* r = new GlobalModifier(engine_);
             engine_->GetModifiers()->push_back(r);
             r->name_ = "Rectangle";
             engine_->selectedModifiable = r;
@@ -35,20 +33,6 @@ namespace MsqLights {
             SpotModifier* s = new SpotModifier(engine_);
             engine_->GetModifiers()->push_back(s);
             s->name_ = "Spot";
-            engine_->selectedModifiable = s;
-            s->Init();
-        }
-        if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 240, 20, 80, 20}, "CSpot")){
-            SpotModifier* s = new CircleSpotModifier(engine_);
-            engine_->GetModifiers()->push_back(s);
-            s->name_ = "CSpot";
-            engine_->selectedModifiable = s;
-            s->Init();
-        }
-        if(GuiButton((Rectangle) {WIDTH - PANELSIZE + 320, 20, 80, 20}, "LSpot")){
-            SpotModifier* s = new LineSpotModifier(engine_);
-            engine_->GetModifiers()->push_back(s);
-            s->name_ = "LSpot";
             engine_->selectedModifiable = s;
             s->Init();
         }
@@ -260,13 +244,9 @@ namespace MsqLights {
 
                 Modifier* modif = nullptr;
                 if(!strcmp(typeStr, "Rectangle"))
-                    modif = new RectangleModifier(this);
+                    modif = new GlobalModifier(this);
                 else if(!strcmp(typeStr, "Spot"))
                     modif = new SpotModifier(this);
-                else if(!strcmp(typeStr, "CircleSpot"))
-                    modif = new CircleSpotModifier(this);
-                else if(!strcmp(typeStr, "LineSpot"))
-                    modif = new LineSpotModifier(this);
                 modif->Init();
                 modif->Load(page[j]);
                 modifiers->push_back(modif);

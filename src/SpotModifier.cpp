@@ -75,10 +75,6 @@ namespace MsqLights {
         return 1.f - ((dist - innerRadius_) / (outerRadius_ - innerRadius_));
     }
 
-    void SpotModifier::SetPosition(Vector2 p) {
-        position_ = p;
-    } 
-
     void SpotModifier::RegisterParameters() {
         Modifier::RegisterParameters();
         parameters_.emplace("pos.x", &position_.x);

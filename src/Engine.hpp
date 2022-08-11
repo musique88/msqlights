@@ -6,7 +6,7 @@
 #include <ola/client/StreamingClient.h>
 #include "Fixture.hpp"
 #include "Modifier.hpp"
-#include "RectangleModifier.hpp"
+#include "GlobalModifier.hpp"
 #include "SpotModifier.hpp"
 #include "Follow.hpp"
 #include "OscServer.hpp"

@@ -42,7 +42,6 @@ namespace MsqLights {
         virtual float AmountWithLine(Vector2 a, Vector2 b) = 0; 
         virtual void Draw() override;
         virtual Rectangle GetSelector();
-        virtual void SetPosition(Vector2 p) = 0;
         virtual void Update();
         virtual void RegisterParameters() override;
         virtual void Load(rapidjson::Value& val) override;

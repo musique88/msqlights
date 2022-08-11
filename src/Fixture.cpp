@@ -169,6 +169,16 @@ namespace MsqLights {
         DrawText(name_.c_str(), position_.x, position_.y, 20, engine_->selectedModifiable == this ? GREEN : WHITE);
     }
 
+    void Fixture::RegisterParameters() {
+        parameters_.emplace("name", &name_);
+        parameters_.emplace("position.x", &position_.x);
+        parameters_.emplace("position.y", &position_.y);
+        parameters_.emplace("lookingAt.x", &lookingAt_.x);
+        parameters_.emplace("lookingAt.y", &lookingAt_.y);
+        parameters_.emplace("addr", &addr_);
+        parameters_.emplace("mode", (unsigned int*) &mode_);
+    }
+
     void Fixture::DrawProps() {
         engine_->DisplayValue(&name_, "name", (Vector2){WIDTH - PANELSIZE, 20});
         engine_->DisplayValue(&position_.x, "position.x", (Vector2){WIDTH - PANELSIZE, 60}, 0, 1500);

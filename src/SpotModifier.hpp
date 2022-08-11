@@ -15,7 +15,6 @@ namespace MsqLights {
         virtual void Draw() override;
         virtual Rectangle GetSelector() override;
         virtual float AmountWithLine(Vector2 a, Vector2 b) override;
-        void SetPosition(Vector2 p) override;
 
         virtual void RegisterParameters() override;
     };

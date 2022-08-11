@@ -3,17 +3,14 @@
 #include "Modifier.hpp"
 
 namespace MsqLights {
-    class RectangleModifier : public Modifier {
+    class GlobalModifier : public Modifier {
     public:
-        Rectangle rect_;
-    public:
-        RectangleModifier(Engine* e);
+        GlobalModifier(Engine* e);
 
         void DrawProps() override;
         void Draw() override;
         Rectangle GetSelector() override;
         float AmountWithLine(Vector2 a, Vector2 b) override;
-        void SetPosition(Vector2 p) override;  
 
         virtual void RegisterParameters() override;
     };
