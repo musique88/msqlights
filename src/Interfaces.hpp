@@ -9,9 +9,4 @@ namespace MsqLights {
     public:
         virtual rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) = 0;
     };
-   
-    class Drawable {
-    public:
-        virtual void Draw() = 0;
-    };
 }

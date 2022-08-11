@@ -29,7 +29,7 @@ namespace MsqLights {
 
         return arr;
     }
-
+/*
     void DealWithOsc(Engine* e, tosc_message osc) {
         auto addr = SeparateAddresses(osc);
         
@@ -55,7 +55,7 @@ namespace MsqLights {
             return;
         }
     }
-
+*/
     OscServer::OscServer(Engine* e) {
         engine_ = e;
     }
@@ -90,13 +90,13 @@ namespace MsqLights {
                     while (tosc_getNextMessage(&bundle, &osc)) {
                         tosc_message printable = osc;
                         tosc_printMessage(&printable);
-                        DealWithOsc(engine_, osc);
+                        //DealWithOsc(engine_, osc);
                     }
                 } else {
                     tosc_parseMessage(&osc, buffer_, len);
                     tosc_message printable = osc;
                     tosc_printMessage(&printable);
-                    DealWithOsc(engine_, osc);
+                    //DealWithOsc(engine_, osc);
                 }
             }
         }

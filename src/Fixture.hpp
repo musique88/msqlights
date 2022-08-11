@@ -13,7 +13,7 @@
 namespace MsqLights {
     class Modifier;
 
-    class Fixture : public Modifiable, public Drawable {
+    class Fixture : public Modifiable {
     public: 
         enum class Mode {
             Dimmer, 
@@ -47,10 +47,8 @@ namespace MsqLights {
         void RegisterParameters() override;
 
         void Blend(Modifier* m);
-        void Draw() override;
-        void Update();
+        void Update() override;
         void BlendTo(float secs);
-        void DrawProps() override;
         void WriteDmx();
     };
 }

@@ -1,4 +1,3 @@
-#define RAYGUI_IMPLEMENTATION
 #include "Engine.hpp"
 
 int main() {

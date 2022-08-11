@@ -8,17 +8,6 @@ namespace MsqLights {
         type_ = "Global";
     }
 
-    void GlobalModifier::DrawProps() {
-        Modifier::DrawProps();
-    } 
-
-    void GlobalModifier::Draw() {}
-
-
-    Rectangle GlobalModifier::GetSelector() {
-        return (Rectangle) {0, 0, 20, 20};
-    }
-
     float GlobalModifier::AmountWithLine(Vector2 a, Vector2 b) {
         return 1;
     }

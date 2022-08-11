@@ -46,26 +46,6 @@ namespace MsqLights {
         outerRadius_ = 0;
     }
 
-    void SpotModifier::DrawProps() {
-        engine_->DisplayValue(&position_.x, "pos.x", (Vector2) {WIDTH - PANELSIZE, 80}, 0, 1500);
-        engine_->DisplayValue(&position_.y, "pos.y", (Vector2) {WIDTH - PANELSIZE, 120}, 0, 1080);
-        engine_->DisplayValue(&innerRadius_, "innerRadius", (Vector2) {WIDTH - PANELSIZE, 160}, 0, 1080);
-        engine_->DisplayValue(&outerRadius_, "outerRadius", (Vector2) {WIDTH - PANELSIZE, 200}, 0, 1080);
-        engine_->DisplayPositionSelector(&position_, "Origin", (Vector2) {WIDTH - PANELSIZE, 240});
-        Modifier::DrawProps();
-    }
-
-    void SpotModifier::Draw() {
-        DrawRectangleRec(GetSelector(), color_);
-        DrawCircleLines(position_.x, position_.y, innerRadius_, color_);
-        DrawCircleLines(position_.x, position_.y, outerRadius_, color_);
-        DrawText(name_.c_str(), position_.x, position_.y, 20, engine_->selectedModifiable == this ? GREEN : BLUE);
-    }
-
-    Rectangle SpotModifier::GetSelector() {
-        return (Rectangle) {position_.x - 10, position_.y - 10, 20, 20};
-    }
-
     float SpotModifier::AmountWithLine(Vector2 a, Vector2 b) {
         float dist = pDistance(position_, a, b);
         if (dist < innerRadius_)

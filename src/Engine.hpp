@@ -8,9 +8,9 @@
 #include "Modifier.hpp"
 #include "GlobalModifier.hpp"
 #include "SpotModifier.hpp"
-#include "Follow.hpp"
 #include "OscServer.hpp"
 #include <random>
+#include <map>
 
 #define WIDTH 1366
 #define HEIGHT 768 
@@ -29,17 +29,16 @@ namespace MsqLights {
         
         public:
             EmptyModifiable(Engine* engine);
-            void DrawProps() override;
         };
 
         unsigned char dmxValues[DMX_ADDRESSES];
-        std::vector<Fixture*> fixtures;
-        std::vector<Modifier*> modifiers[PAGES];
+        std::vector<unsigned int> fixtures;
+        std::vector<std::vector<unsigned int>> scenes;
+        std::map<unsigned int, Modifiable*> modifiables;
         unsigned int selectedPage;
         Modifiable* selectedModifiable;
         void* activeProp;
         Vector2* positionSelector;
-        Follow follow;
         EmptyModifiable emptyModifiable;
         bool debug;
         ola::DmxBuffer dmxBuffer;
@@ -55,18 +54,14 @@ namespace MsqLights {
         void DisplayPositionSelector(Vector2* position, std::string propName, Vector2 pos);
         void DisplaySelectedFixtures(std::vector<Fixture*>* selectedFixtures, Vector2 pos);
 
-        void SelectPosition();
-        void MouseLeftClick();
         void SendDmx();
         void DeselectModifiable();
-        std::vector<Modifier*>* GetModifiers();
 
         void Save();
         void Load();
 
         void Init();
         void Update();
-        void Draw();
         void Close();
         void Loop();
     };

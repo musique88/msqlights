@@ -1,0 +1,5 @@
+namespace MsqLights {
+    class Scene {
+
+    };
+}

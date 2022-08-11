@@ -11,9 +11,6 @@ namespace MsqLights {
         SpotModifier(Engine* e);
         SpotModifier(Engine* e, rapidjson::Value& val);
 
-        virtual void DrawProps() override;
-        virtual void Draw() override;
-        virtual Rectangle GetSelector() override;
         virtual float AmountWithLine(Vector2 a, Vector2 b) override;
 
         virtual void RegisterParameters() override;
