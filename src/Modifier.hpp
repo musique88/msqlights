@@ -14,10 +14,10 @@ namespace MsqLights {
     class Modifier : public Modifiable {
     protected:
         int blendModeGui_ = 0;
-        Color tempColor_ = {0,0,0,255};
+        ColorInt tempColor_ = {0,0,0};
         float fadeTimer_ = 0;
-        Color nextColor_ = {0,0,0,255};
-        Color oldColor_ = {0,0,0,255};
+        ColorInt nextColor_ = {0,0,0};
+        ColorInt oldColor_ = {0,0,0};
         bool fadeDone_ = true;
     public:
         enum class Blend {
@@ -26,7 +26,7 @@ namespace MsqLights {
         };
         Blend blendMode_;
         float fade_;
-        Color color_;
+        ColorInt color_;
         std::vector<unsigned int> affectedFixtures_;
         std::string name_;
         std::string type_;

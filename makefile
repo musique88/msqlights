@@ -1,14 +1,17 @@
 CC = clang
 CXX = clang++
-INCLUDES = -lraylib -lola -lolacommon -g
+INCLUDES = -lola -lolacommon -g
 CXXFLAGS = -I. -Wall -std=c++20
 
 SRCS := $(wildcard src/*.cpp)
 
 OBJS := $(patsubst src/%.cpp, build/%.o,$(SRCS))
 
-.PHONY: all
+.PHONY: all clean
 all : msqlights
+
+clean: 
+	rm -r build
 
 build/tinyosc.o: tinyosc/tinyosc.c
 	$(CC) -c $< -o $@

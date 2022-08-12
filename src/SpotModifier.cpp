@@ -2,7 +2,6 @@
 #include "Engine.hpp"
 #include <algorithm>
 #include <cmath>
-#include "JsonHelper.hpp"
 
 namespace MsqLights {
     // https://stackoverflow.com/a/6853926

@@ -1,14 +1,12 @@
 #include "Fixture.hpp"
 #include "Engine.hpp"
 
-#include "JsonHelper.hpp"
-
 namespace MsqLights {
-    unsigned char ResolveDimmer(Color c) {
+    unsigned char ResolveDimmer(ColorInt c) {
         return std::max({c.r, c.g, c.b});
     }
 
-    std::array<unsigned char, 3> ResolveRGB(Color c) {
+    std::array<unsigned char, 3> ResolveRGB(ColorInt c) {
         std::array<unsigned char, 3> arr;
         arr[0] = c.r;
         arr[1] = c.g;
@@ -16,7 +14,7 @@ namespace MsqLights {
         return arr;
     }
 
-    std::array<unsigned char, 4> ResolveRGBI(Color c) {
+    std::array<unsigned char, 4> ResolveRGBI(ColorInt c) {
         std::array<unsigned char, 4> arr;
         arr[0] = c.r;
         arr[1] = c.g;
@@ -25,7 +23,7 @@ namespace MsqLights {
         return arr;
     }
 
-    std::array<unsigned char, 4> ResolveRGBA(Color c) {
+    std::array<unsigned char, 4> ResolveRGBA(ColorInt c) {
         std::array<unsigned char, 4> arr;
         auto rgb = ResolveRGB(c);
         arr[0] = rgb[0];
@@ -47,7 +45,7 @@ namespace MsqLights {
         return arr;
     }
 
-    std::array<unsigned char, 5> ResolveRGBAW(Color c) {
+    std::array<unsigned char, 5> ResolveRGBAW(ColorInt c) {
         std::array<unsigned char, 5> arr;
         auto rgba = ResolveRGBA(c);
         arr[0] = rgba[0];
@@ -68,19 +66,6 @@ namespace MsqLights {
         return arr;
     }
 
-    unsigned int Fixture::ModeToDMXSize(Mode mode) {
-        switch(mode) {
-            case Mode::Dimmer: 
-                return 1;
-            case Mode::RGB:
-                return 3;
-            case Mode::RGBA:
-                return 4;
-            case Mode::RGBAW:
-                return 5;
-        };
-    }
-
     unsigned char Fixture::cast(int a) {
         if (a > 255)
             return 255;
@@ -89,27 +74,18 @@ namespace MsqLights {
         return a;
     }
 
-    Color Fixture::GetColor() {
-        return (Color) {cast(color_.r), cast(color_.g), cast(color_.b), cast(color_.a)};
+    ColorInt Fixture::GetColor() {
+        return color_;
     }
 
     rapidjson::Value Fixture::Serialize(rapidjson::Document::AllocatorType& allocator) {
         rapidjson::Value val = Modifiable::Serialize(allocator);
-        rapidjson::Value name;
-        name.SetString(name_.c_str(), allocator);
-        val.AddMember("name", name, allocator);
-        val.AddMember("position", MsqLights::Serialize(position_, allocator), allocator);
-        val.AddMember("lookingAt", MsqLights::Serialize(lookingAt_, allocator), allocator);
-        val.AddMember("addr", addr_, allocator);
-        val.AddMember("mode", (int)mode_, allocator);
         return val;
     }
 
     Fixture::Fixture(Engine* e, rapidjson::Value& val)
     : Modifiable(e) {
         name_ = val["name"].GetString();
-        position_ = Vector2Parse(val["position"]);
-        lookingAt_ = Vector2Parse(val["lookingAt"]);
         addr_ = val["addr"].GetInt();
         mode_ = (Mode)val["mode"].GetInt();
     }
@@ -118,7 +94,7 @@ namespace MsqLights {
     : Modifiable(e) {
         position_ = (Vector2) {0, 0};
         lookingAt_ = (Vector2) {0, 0};
-        color_ = (Color) {0,0,0,255};
+        color_ = (ColorInt) {0, 0, 0};
         addr_ = 0;
         mode_ = Mode::Dimmer;
         name_ = "Fixture";
@@ -143,22 +119,16 @@ namespace MsqLights {
         lookingAt_ = lookingAt;
         name_ = name;
         addr_ = addr;
-        color_ = (Color){0,0,0,255};
+        color_ = (ColorInt){0, 0, 0};
     }
 
     void Fixture::Blend(Modifier* m) {
         switch (m->blendMode_){
             case (Modifier::Blend::Addition):
-                nextColor_ = nextColor_ + ColorMult(
-                    m->color_, 
-                    m->AmountWithLine(position_, lookingAt_)
-                );
+                nextColor_ = nextColor_ + m->color_ * m->AmountWithLine(position_, lookingAt_);
                 return;
             case (Modifier::Blend::Subtract):
-                nextColor_ = nextColor_ - ColorMult(
-                    m->color_, 
-                    m->AmountWithLine(position_, lookingAt_)
-                );
+                nextColor_ = nextColor_ - m->color_ * m->AmountWithLine(position_, lookingAt_);
                 return;
         }
     }    
@@ -174,7 +144,7 @@ namespace MsqLights {
     }
 
     void Fixture::WriteDmx() {
-        auto arr = ResolveRGBAW(GetColor());
+        auto arr = ResolveRGBAW(color_);
 
         switch (mode_)
         {
@@ -214,7 +184,7 @@ namespace MsqLights {
 
     void Fixture::Update() {
         color_ = nextColor_;
-        nextColor_ = BLACK;
+        nextColor_ = {0, 0, 0};
         if(fadeTimer_ <= 0)
             return;
         
@@ -222,11 +192,11 @@ namespace MsqLights {
             ColorInt(oldColor_) * (fadeTimer_ / timeToFade_) + 
             (color_) * (1 - (fadeTimer_ / timeToFade_)));
 
-        fadeTimer_ -= GetFrameTime();
+        fadeTimer_ -= engine_->GetDeltaTime();
     }
 
     void Fixture::BlendTo(float secs) {
-        oldColor_ = color_.getColor();
+        oldColor_ = color_.Clamped();
         fadeTimer_ = secs;
         timeToFade_ = secs;
     }

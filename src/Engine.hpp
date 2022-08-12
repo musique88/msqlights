@@ -1,9 +1,9 @@
 #pragma once
-#include <raylib.h>
-#include <raygui.h>
 #include "Interfaces.hpp"
 #include <ola/DmxBuffer.h>
-#include <ola/client/StreamingClient.h>
+#include <ola/client/ClientWrapper.h>
+#include <ola/io/SelectServer.h>
+#include <ola/Callback.h>
 #include "Fixture.hpp"
 #include "Modifier.hpp"
 #include "GlobalModifier.hpp"
@@ -11,6 +11,12 @@
 #include "OscServer.hpp"
 #include <random>
 #include <map>
+#include <chrono>
+#include <thread>
+#include <vector>
+#include <queue>
+#include <sys/socket.h>
+#include <arpa/inet.h>	//inet_addr
 
 #define WIDTH 1366
 #define HEIGHT 768 
@@ -21,6 +27,8 @@ namespace MsqLights {
     const unsigned int PAGES = 16;
 
     class Engine {
+        float deltaTime;
+        std::chrono::time_point<std::chrono::steady_clock> lastTime;
     public:
         class EmptyModifiable : public Modifiable {
             int selectedFixture_;
@@ -42,24 +50,29 @@ namespace MsqLights {
         EmptyModifiable emptyModifiable;
         bool debug;
         ola::DmxBuffer dmxBuffer;
-        ola::client::StreamingClient dmxClient;
+        ola::client::OlaClientWrapper dmxClient;
         OscServer oscServer;
         std::default_random_engine random;
 
-        Engine();
-        
-        void DisplayValue(int* value, std::string propName, Vector2 pos, int min, int max);
-        void DisplayValue(float* value, std::string propName, Vector2 pos, int min, int max);
-        void DisplayValue(std::string* value, std::string propName, Vector2 pos);
-        void DisplayPositionSelector(Vector2* position, std::string propName, Vector2 pos);
-        void DisplaySelectedFixtures(std::vector<Fixture*>* selectedFixtures, Vector2 pos);
+        std::thread dmxIOThread;
+        std::thread connectionAcceptorThread;
+        std::vector<std::thread> connectionsThreads;
 
-        void SendDmx();
-        void DeselectModifiable();
+        std::queue<std::string> commandQueue;
+
+        Engine();
+
+        static bool SendDmx(Engine* e, ola::client::OlaClientWrapper* wrapper);
+        static void DmxIO(Engine* e);
+        static void ConnectionAcceptor(Engine* e);
+        static void ConnectionManager(Engine* e, int socket);
+        
+        float GetDeltaTime();
 
         void Save();
         void Load();
 
+        void ExecuteCommand(std::string str);
         void Init();
         void Update();
         void Close();

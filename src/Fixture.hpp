@@ -1,14 +1,13 @@
 #pragma once
 
-#include <raylib.h>
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <array>
-#include <raygui.h>
 #include "Interfaces.hpp"
 #include "Color.hpp"
 #include "Modifiable.hpp"
+#include "Vector2.hpp"
 
 namespace MsqLights {
     class Modifier;
@@ -26,17 +25,16 @@ namespace MsqLights {
         Vector2 lookingAt_;
         ColorInt color_;
         ColorInt nextColor_;
-        Color oldColor_;
+        ColorInt oldColor_;
         float fadeTimer_;
         float timeToFade_;
         unsigned int addr_;
         Mode mode_;
         std::string name_;
 
-        static unsigned int ModeToDMXSize(Mode mode);
         static unsigned char cast(int a);
 
-        Color GetColor();
+        ColorInt GetColor();
         rapidjson::Value Serialize(rapidjson::Document::AllocatorType& allocator) override;
         Fixture(Engine* e);
         Fixture(const Fixture& f);

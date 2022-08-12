@@ -1,6 +1,5 @@
 #include "GlobalModifier.hpp"
 #include "Engine.hpp"
-#include "JsonHelper.hpp"
 
 namespace MsqLights {
     GlobalModifier::GlobalModifier(Engine* e)

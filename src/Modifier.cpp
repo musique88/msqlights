@@ -1,6 +1,5 @@
 #include "Modifier.hpp"
 #include "Engine.hpp"
-#include "JsonHelper.hpp"
 
 namespace MsqLights {
 
@@ -25,13 +24,13 @@ namespace MsqLights {
     Modifier::Modifier(Engine* engine) 
     : Modifiable(engine) {
         blendMode_ = Blend::Addition;
-        color_ = {0,0,0,255};
+        color_ = {0,0,0};
         type_ = "None";
         fade_ = 0;
     }
 
     void Modifier::Update() {
-        fadeTimer_ += GetFrameTime();
+        fadeTimer_ += engine_->GetDeltaTime();
         if (fadeDone_)
             return;
         if (fade_ == 0) {
@@ -43,7 +42,7 @@ namespace MsqLights {
             color_ = nextColor_;
             return;
         }
-        color_ = ColorFade(nextColor_, oldColor_, fadeTimer_ / fade_);
+        color_ = nextColor_.Fade(oldColor_, fadeTimer_ / fade_);
     }
 
     Modifier::~Modifier() {
