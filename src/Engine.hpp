@@ -17,6 +17,7 @@
 #include <queue>
 #include <sys/socket.h>
 #include <arpa/inet.h>	//inet_addr
+#include <utility>
 
 #define WIDTH 1366
 #define HEIGHT 768 
@@ -58,21 +59,27 @@ namespace MsqLights {
         std::thread connectionAcceptorThread;
         std::vector<std::thread> connectionsThreads;
 
-        std::queue<std::string> commandQueue;
+        std::queue<std::pair<std::string, int>> commandQueue;
 
         Engine();
 
         static bool SendDmx(Engine* e, ola::client::OlaClientWrapper* wrapper);
         static void DmxIO(Engine* e);
         static void ConnectionAcceptor(Engine* e);
-        static void ConnectionManager(Engine* e, int socket);
+        static void ConnectionManager(Engine* e, int socket, struct sockaddr clientinfo);
         
         float GetDeltaTime();
 
         void Save();
         void Load();
 
-        void ExecuteCommand(std::string str);
+        std::vector<
+            std::pair<
+                std::string, 
+                std::vector<std::string>
+            >
+        > SplitCommands(std::string str);
+        void ExecuteCommand(std::string str, int socketFD);
         void Init();
         void Update();
         void Close();

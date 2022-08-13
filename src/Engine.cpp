@@ -61,11 +61,11 @@ namespace MsqLights {
         std::cout << "Waiting for connections on 8888" << std::endl;
         c = sizeof(struct sockaddr_in);
         while((new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c))) {
-            e->connectionsThreads.emplace_back(&Engine::ConnectionManager, e, new_socket);
+            e->connectionsThreads.emplace_back(&Engine::ConnectionManager, e, new_socket, client);
         }
     }
 
-    void Engine::ConnectionManager(Engine* e, int socket_desc) {
+    void Engine::ConnectionManager(Engine* e, int socket_desc, struct sockaddr clientinfo) {
         //Get the socket descriptor
 	    int sock = socket_desc;
 	    int read_size;
@@ -75,27 +75,25 @@ namespace MsqLights {
 	
 	    //Send some messages to the client
 	    message = "Greetings! I am your connection handler\n";
-	    write(sock , message , strlen(message));
+	    write(sock, message, strlen(message));
 	
 	    message = "Now type something and i shall repeat what you type \n";
-	    write(sock , message , strlen(message));
+	    write(sock, message, strlen(message));
 	
 	    //Receive a message from client
-	    while( (read_size = recv(sock , client_message , 2000 , 0)) > 0 )
-	    {
+	    while((read_size = recv(sock, client_message , 2000 , 0)) > 0) {
 	    	//Send the message back to client
-	    	write(sock , client_message , strlen(client_message));
+	    	write(sock, client_message, strlen(client_message));
 	    }
 	
-	    if(read_size == 0)
-	    {
+	    if(read_size == 0) {
 	    	puts("Client disconnected");
 	    	fflush(stdout);
 	    }
-	    else if(read_size == -1)
-	    {
+	    else if(read_size == -1) {
 	    	perror("recv failed");
 	    }
+        close(socket_desc);
     }
 
     // REDO
@@ -178,15 +176,53 @@ namespace MsqLights {
         connectionAcceptorThread = std::thread(Engine::ConnectionAcceptor, this);
         while(true) {
             for(unsigned int i = 0; i < commandQueue.size(); i++) {
-                ExecuteCommand(commandQueue.front());
+                ExecuteCommand(commandQueue.front().first, commandQueue.front().second);
                 commandQueue.pop();
             }
+
+            for(unsigned int i = 0; i < connectionsThreads.size(); i++)
+                if (connectionsThreads[i].joinable())
+                    connectionsThreads[i].join();
         }
         Close();
     }
 
-    void Engine::ExecuteCommand(std::string command) {
+    std::vector<std::pair<std::string, std::vector<std::string>>> Engine::SplitCommands(std::string str) {
+        std::string strMod = str;
+        std::vector<std::string> commands;
 
+        unsigned int pos = 0;
+        std::string token;
+        // https://stackoverflow.com/a/14266139
+        while ((pos = strMod.find("\n")) != std::string::npos) {
+            token = strMod.substr(0, pos);
+            commands.emplace_back(token);
+            strMod.erase(0, pos + 1);
+        }
+
+        strMod = str;
+
+        std::vector<std::pair<std::string, std::vector<std::string>>> returnval;
+        std::vector<std::string> tokens;
+        for(unsigned int i = 0; i < commands.size(); i++) {
+            std::string command = commands[i];
+            tokens.clear();
+            pos = 0;
+            while ((pos = command.find(" ")) != std::string::npos) {
+                token = command.substr(0, pos);
+                tokens.emplace_back(token);
+                command.erase(0, pos + 1);
+            }
+            returnval.emplace_back(std::make_pair(tokens.front(), std::vector(tokens.begin() + 1, tokens.end())));
+        }
+        return returnval;
+    }
+
+    void Engine::ExecuteCommand(std::string command, int socketFD) {
+        auto commands = SplitCommands(command);
+        for (unsigned int i = 0; i < commands.size(); i++) {
+            
+        }
     }   
 
     float Engine::GetDeltaTime() {

@@ -36,4 +36,13 @@ add 0xDEADBEEF 0xF00DBABE
 //getids
 getids
 // would return getids :OK 0xDEADBEEF 0xF00DBABE
+
+//getparams "modifiable id"
+getparams 0xDEADBEEF
+// would return getparams 0xDEADBEEF :OK position.x position.y ...
+
+//getid
+getid Bak3
+// would return getid Bak3 :OK 0xF00DBABE ...
+
 ```
