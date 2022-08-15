@@ -1,5 +1,19 @@
 {
-    "fixtures": [],
+    "fixtures": [
+        {
+            "name": "Fixture",
+            "position": {
+                "x": 500.0,
+                "y": 500.0
+            },
+            "lookingAt": {
+                "x": 500.0,
+                "y": 500.0
+            },
+            "addr": 0,
+            "mode": 0
+        }
+    ],
     "modifiers": [
         [
             {
@@ -8,7 +22,7 @@
                 "color.g": 0,
                 "color.r": 0,
                 "fade": 0.0,
-                "id": 1896753446,
+                "id": 1067071276,
                 "name": "Rectangle",
                 "rect.h": 0.0,
                 "rect.w": 0.0,
@@ -18,8 +32,63 @@
                 "affectedFixtures": []
             }
         ],
-        [],
-        [],
+        [
+            {
+                "blendMode": 0,
+                "color.b": 0,
+                "color.g": 0,
+                "color.r": 0,
+                "fade": 0.0,
+                "id": 630999635,
+                "name": "Rectangle",
+                "rect.h": 0.0,
+                "rect.w": 0.0,
+                "rect.x": 0.0,
+                "rect.y": 0.0,
+                "type": "Rectangle",
+                "affectedFixtures": []
+            }
+        ],
+        [
+            {
+                "blendMode": 0,
+                "color.b": 0,
+                "color.g": 0,
+                "color.r": 0,
+                "fade": 0.0,
+                "id": 936616559,
+                "innerRadius": 0.0,
+                "name": "CSpot",
+                "outerRadius": 0.0,
+                "phase": 0.0,
+                "pos.x": 0.0,
+                "pos.y": 0.0,
+                "size.x": 0.0,
+                "size.y": 0.0,
+                "speed": 0.10000000149011612,
+                "type": "CircleSpot",
+                "affectedFixtures": []
+            },
+            {
+                "blendMode": 0,
+                "color.b": 0,
+                "color.g": 0,
+                "color.r": 0,
+                "destination.x": 0.0,
+                "destination.y": 0.0,
+                "fade": 0.0,
+                "id": 659374603,
+                "innerRadius": 0.0,
+                "name": "LSpot",
+                "outerRadius": 0.0,
+                "phase": 0.0,
+                "pos.x": 0.0,
+                "pos.y": 0.0,
+                "speed": 0.10000000149011612,
+                "type": "LineSpot",
+                "affectedFixtures": []
+            }
+        ],
         [],
         [],
         [],

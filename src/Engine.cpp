@@ -234,9 +234,11 @@ namespace MsqLights {
     }
 
     void Engine::Load() {
-        for(unsigned int i = 0; i < GetModifiers()->size(); i++)
-            delete GetModifiers()->at(i);
-        GetModifiers()->clear();
+        for(unsigned int i = 0; i < PAGES; i++) {
+            for(unsigned int j = 0; j < modifiers[i].size(); j++)
+                delete modifiers[i][j];
+            modifiers[i].clear();
+        }
         for(unsigned int i = 0; i < fixtures.size(); i++)
             delete fixtures[i];
         fixtures.clear();
@@ -269,7 +271,7 @@ namespace MsqLights {
                     modif = new LineSpotModifier(this);
                 modif->Init();
                 modif->Load(page[j]);
-                modifiers->push_back(modif);
+                modifiers[i].push_back(modif);
             }
         }
     }
